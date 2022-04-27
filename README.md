@@ -1,11 +1,12 @@
 # Hubspot Marketing WebTeam ESLing rules for Node.js
 
-This is a list of ESLint rules that are recommended for use with *Hubspot Marketing WebTeam* projects.
+This is a list of ESLint rules that are recommended for use with **Hubspot Marketing WebTeam** projects.
 
 <!-- index-start -->
 ## Index
 
 - [Setup](#setup)
+- [Where to use it](#where-to-use-it)
 <!-- index-end -->
 
 ## Setup
@@ -34,3 +35,7 @@ npm i -D husbpot-wt-eslint-node
   }
 }
 ```
+
+## Where to use it
+
+This package is intended to be used as a starting point for ESLint rules for Backend Node.js projects, and not for use in browser environments.
