@@ -1,0 +1,27 @@
+{
+  "name": "wt-eslint-node",
+  "version": "0.1.0",
+  "description": "HubSpot Marketing WebTeam ESLint rules for Node.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HubSpotWebTeam/wt-eslint-node.git"
+  },
+  "keywords": [
+    "eslint"
+  ],
+  "author": "Alessio Michelini & David Mooney",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HubSpotWebTeam/wt-eslint-node/issues"
+  },
+  "homepage": "https://github.com/HubSpotWebTeam/wt-eslint-node#readme",
+  "dependencies": {
+    "eslint": "^8.14.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.26.0"
+  }
+}
