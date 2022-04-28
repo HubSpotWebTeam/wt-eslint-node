@@ -14,14 +14,14 @@ This is a list of ESLint rules that are recommended for use with **Hubspot Marke
 1. Install as dev dependency
 
 ```
-npm i -D husbpot-wt-eslint-node
+npm i -D eslint-config-wt-node
 ```
 
 2. Add to `.eslintrc` in project root directory
 
 ```json
 {
-  "extends": "husbpot-wt-eslint-node"
+  "extends": "eslint-config-wt-node"
 }
 ```
 
@@ -29,7 +29,7 @@ npm i -D husbpot-wt-eslint-node
 
 ```
 {
-  "extends": "husbpot-wt-eslint-node",
+  "extends": "eslint-config-wt-node",
   "settings": {
     "import/resolver": "webpack"
   }
