@@ -7,7 +7,6 @@ module.exports = {
   ignorePatterns: [
     '/node_modules/',
     '/.serverless/',
-
     '/.eslintrc.js',
     '/.webpack/',
   ],
