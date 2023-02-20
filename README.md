@@ -14,7 +14,7 @@ This is a list of ESLint rules that are recommended for use with **Hubspot Marke
 
 1. Install as dev dependency
 
-```
+```shell
 npm i -D @hs-web-team/eslint-config-node
 ```
 
