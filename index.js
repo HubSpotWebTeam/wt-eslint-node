@@ -23,6 +23,7 @@ module.exports = {
     'no-underscore-dangle': 0,
     'no-confusing-arrow': 0,
     'import/no-unresolved': 0,
+    'import/prefer-default-export': 0,
     'no-trailing-spaces': [2, { skipBlankLines: true }],
     'no-unused-expressions': [1, { allowTernary: true }],
     'max-len': [
