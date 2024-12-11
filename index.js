@@ -15,7 +15,9 @@ module.exports = {
     ecmaVersion: 'latest',
   },
   rules: {
-    'no-console': 0,
+    'no-console': ['error', {
+      allow: ['info', 'warn', 'error'],
+    }],
     camelcase: 0,
     'comma-dangle': 1,
     'arrow-parens': 0,
