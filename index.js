@@ -20,6 +20,7 @@ module.exports = {
     }],
     camelcase: 0,
     'comma-dangle': 1,
+    'arrow-body-style': 0,
     'arrow-parens': 0,
     'no-plusplus': 0,
     'no-underscore-dangle': 0,
