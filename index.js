@@ -36,5 +36,10 @@ module.exports = {
     ],
     'operator-linebreak': 0,
     'implicit-arrow-linebreaks': 0,
+    'implicit-arrow-linebreak': 0,
+    'object-curly-newline': 0,
+    'newline-per-chained-call': 0,
+    indent: 0,
+    'function-paren-newline': 0,
   },
 };
