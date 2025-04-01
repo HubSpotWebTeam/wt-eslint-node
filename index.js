@@ -4,20 +4,18 @@ module.exports = {
     es2021: true,
     node: true,
   },
-  ignorePatterns: [
-    '/node_modules/',
-    '/.serverless/',
-    '/.eslintrc.js',
-    '/.webpack/',
-  ],
+  ignorePatterns: ['/node_modules/', '/.serverless/', '/.eslintrc.js', '/.webpack/'],
   extends: ['airbnb-base'],
   parserOptions: {
     ecmaVersion: 'latest',
   },
   rules: {
-    'no-console': ['error', {
-      allow: ['info', 'warn', 'error'],
-    }],
+    'no-console': [
+      'error',
+      {
+        allow: ['info', 'warn', 'error'],
+      },
+    ],
     camelcase: 0,
     'comma-dangle': 1,
     'arrow-parens': 0,
