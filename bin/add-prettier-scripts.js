@@ -25,8 +25,8 @@ function addPrettierScripts() {
     // Add prettier scripts with updated glob patterns (only TypeScript and JavaScript files)
     packageJson.scripts = {
       ...packageJson.scripts,
-      'prettier:check': 'prettier --check "**/*.{ts,tsx,js,jsx}" "**/*.json"',
-      'prettier:write': 'prettier --write "**/*.{ts,tsx,js,jsx}" "**/*.json"',
+      'prettier:check': 'prettier --check "**/*.{ts,tsx,js,jsx}" "**/*.json" "**/*.md"',
+      'prettier:write': 'prettier --write "**/*.{ts,tsx,js,jsx}" "**/*.json" "**/*.md"',
     };
 
     // Write updated package.json
