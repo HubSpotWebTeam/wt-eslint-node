@@ -62,6 +62,7 @@ lib
 tsdocs
 npm-shrinkwrap.json
 package-lock.json
+.eslintrc
 *.yml
 *.yaml
 *.md
