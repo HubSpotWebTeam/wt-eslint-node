@@ -8,6 +8,7 @@ This is a list of ESLint rules that are recommended for use with **Hubspot Marke
 
 - [Setup](#setup)
 - [Where to use it](#where-to-use-it)
+- [Using the Prettier Scripts](#using-the-prettier-scripts)
 <!-- index-end -->
 
 ## Setup
@@ -40,3 +41,23 @@ npm i -D @hs-web-team/eslint-config-node
 ## Where to use it
 
 This package is intended to be used as a starting point for ESLint rules for Backend Node.js projects, and not for use in browser environments.
+
+## Using the Prettier Scripts
+
+This package includes a utility script to automatically add Prettier configuration to your project.
+
+1. Run the script:
+
+```shell
+npx @hs-web-team/eslint-config-node/bin/add-prettier-scripts.js
+```
+
+2. The script will:
+   - Add `prettier:check` and `prettier:write` scripts to your package.json
+   - Install Prettier as a dev dependency if not already installed
+   - Create a `.prettierrc.js` file with shared config
+   - Create a `.prettierignore` file with sensible defaults
+
+3. After installation, you can use the following commands:
+   - `npm run prettier:check` - Check files for formatting issues
+   - `npm run prettier:write` - Automatically fix formatting issues
