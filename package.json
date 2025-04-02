@@ -10,6 +10,9 @@
   "engines": {
     "node": ">=22"
   },
+  "bin": {
+    "add-prettier": "./bin/add-prettier-scripts.js"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/HubSpotWebTeam/wt-eslint-node.git"
