@@ -3,6 +3,10 @@
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
+const packageJson = require('../package.json');
+
+const { name } = packageJson;
+
 
 // Main function
 function addPrettierScripts() {
@@ -29,23 +33,12 @@ function addPrettierScripts() {
     // Write updated package.json
     fs.writeFileSync(packageJsonPath, `${JSON.stringify(packageJson, null, 2)}\n`);
 
-    // Check if prettier is installed
-    const hasPrettier = packageJson.dependencies?.prettier || packageJson.devDependencies?.prettier;
-    if (!hasPrettier) {
-      console.info('Prettier not found in dependencies. Adding prettier as a dev dependency...');
-      try {
-        execSync('npm install --save-dev prettier', { stdio: 'inherit' });
-      } catch (error) {
-        console.error('Failed to install prettier:', error.message);
-      }
-    }
-
     // Create .prettierrc.js if it doesn't exist
     const prettierConfigPath = path.join(process.cwd(), '.prettierrc.js');
     if (!fs.existsSync(prettierConfigPath)) {
       console.info('Creating .prettierrc.js file...');
       const prettierConfig =
-`const sharedConfig = require('@hs-web-team/eslint-config-node/.prettierrc.json');
+`const sharedConfig = require('${name}/.prettierrc.json');
 
 module.exports = sharedConfig;`;
       fs.writeFileSync(prettierConfigPath, prettierConfig);
