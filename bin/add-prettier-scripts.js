@@ -6,9 +6,10 @@ const packageJson = require('../package.json');
 
 const { name } = packageJson;
 
-
-// Main function
-function addPrettierScripts() {
+/**
+ * Adds Prettier scripts to the package.json file
+ */
+const addPrettierScripts = () => {
   console.info('Adding Prettier scripts to package.json...');
 
   // Read the package.json file
@@ -18,7 +19,6 @@ function addPrettierScripts() {
     process.exit(1);
   }
 
-  // Use jq to add scripts (reusing the same approach from the bash script)
   try {
     const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
 
@@ -70,7 +70,6 @@ package-lock.json
     console.error('Error updating package.json:', error.message);
     process.exit(1);
   }
-}
+};
 
-// Run the script
 addPrettierScripts();
