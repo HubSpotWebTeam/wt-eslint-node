@@ -44,8 +44,6 @@ module.exports = sharedConfig;`;
       const ignoreContent =
 `node_modules
 coverage
-lib
-tsdocs
 npm-shrinkwrap.json
 package-lock.json
 .eslintrc
