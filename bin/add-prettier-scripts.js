@@ -42,9 +42,7 @@ module.exports = sharedConfig;`;
     if (!fs.existsSync(prettierIgnorePath)) {
       console.info('Creating .prettierignore file...');
       const ignoreContent =
-`node_modules
-coverage
-npm-shrinkwrap.json
+`npm-shrinkwrap.json
 package-lock.json
 .eslintrc
 *.yml
