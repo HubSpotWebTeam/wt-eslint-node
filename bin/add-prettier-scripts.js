@@ -23,8 +23,8 @@ const addPrettierScripts = () => {
 
     packageJson.scripts = {
       ...packageJson.scripts,
-      'prettier:check': 'prettier --check "**/*.{ts,tsx,js,jsx}" "**/*.json" "**/*.md"',
-      'prettier:write': 'prettier --write "**/*.{ts,tsx,js,jsx}" "**/*.json" "**/*.md"',
+      'prettier:check': 'prettier --check .',
+      'prettier:write': 'prettier --write .',
     };
 
     fs.writeFileSync(packageJsonPath, `${JSON.stringify(packageJson, null, 2)}\n`);
