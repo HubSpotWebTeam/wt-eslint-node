@@ -45,8 +45,6 @@ module.exports = sharedConfig;`;
 `npm-shrinkwrap.json
 package-lock.json
 .eslintrc
-*.yml
-*.yaml
 *.html`;
       fs.writeFileSync(prettierIgnorePath, ignoreContent);
     }
