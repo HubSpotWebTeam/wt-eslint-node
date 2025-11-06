@@ -1,6 +1,6 @@
 {
   "name": "@hs-web-team/eslint-config-node",
-  "version": "2.1.2",
+  "version": "3.0.0-next.0",
   "description": "HubSpot Marketing WebTeam ESLint rules for Node.js",
   "main": "index.js",
   "scripts": {
