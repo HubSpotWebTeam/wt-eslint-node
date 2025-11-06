@@ -67,3 +67,7 @@ This package includes a utility script to automatically add Prettier configurati
 ## Migration from v1 to v2
 
 See [MIGRATION-V2.md](./docs/MIGRATION-V2.md)
+
+## Migration from v2 to v3
+
+See [MIGRATION-V3.md](./docs/MIGRATION-V3.md)
