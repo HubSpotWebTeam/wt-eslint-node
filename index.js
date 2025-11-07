@@ -7,16 +7,16 @@ export default defineConfig([
   {
     files: ['**/*.{js,mjs,cjs,ts,mts,cts}'],
     plugins: { js },
-    extends: ['js/recommended'], 
+    extends: ['js/recommended'],
     languageOptions: {
-      globals: {...globals.node, ...globals.es2022}
+      globals: {...globals.node, ...globals.es2022},
     },
     ignores: [
       '**/node_modules/**',
       '**/.serverless/**',
       '**/.webpack/**',
       '**/dist/**',
-      'eslint.config.js'
+      'eslint.config.js',
     ],
     rules: {
       'no-console': [
@@ -50,7 +50,7 @@ export default defineConfig([
       'newline-per-chained-call': 0,
       indent: 0,
       'function-paren-newline': 0,
-    }
+    },
   },
   tseslint.configs.recommended,
 ]);
