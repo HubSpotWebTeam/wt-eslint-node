@@ -12,7 +12,7 @@
     "node": ">=22"
   },
   "bin": {
-    "add-prettier": "./bin/add-prettier-scripts.js"
+    "add-prettier": "bin/add-prettier-scripts.js"
   },
   "repository": {
     "type": "git",
