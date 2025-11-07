@@ -3,6 +3,7 @@
   "version": "3.0.0-next.0",
   "description": "HubSpot Marketing WebTeam ESLint rules for Node.js",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "lint": "npx eslint -c ./index.js *.js --fix",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -29,7 +30,11 @@
   "dependencies": {
     "@eslint/eslintrc": "^3.3.1",
     "@eslint/js": "^9.39.1",
+    "@typescript-eslint/eslint-plugin": "^8.46.3",
+    "@typescript-eslint/parser": "^8.46.3",
     "globals": "^16.5.0",
-    "prettier": "^3.6.2"
+    "prettier": "^3.6.2",
+    "jiti": "^2.6.1",
+    "typescript-eslint": "^8.46.3"
   }
 }
