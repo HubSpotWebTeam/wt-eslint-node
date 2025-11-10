@@ -9,7 +9,7 @@ export default defineConfig([
     plugins: { js },
     extends: ['js/recommended'],
     languageOptions: {
-      globals: {...globals.node, ...globals.es2022},
+      globals: {...globals.node, ...globals.es2022, ...globals.jest},
     },
     ignores: [
       '**/node_modules/**',
