@@ -19,23 +19,36 @@ This is a list of ESLint rules that are recommended for use with **Hubspot Marke
     npm i -D @hs-web-team/eslint-config-node@latest
     ```
 
-2. Add to `.eslintrc` in project root directory
+2. Add to `eslint.config.js` in project root directory
 
-    ```json
-    {
-      "extends": "@hs-web-team/eslint-config-node"
-    }
+    ```typescript
+    import { defineConfig } from 'eslint/config';
+    import wtConfig from '@hs-web-team/eslint-config-node';
+
+    export default defineConfig([
+      ...wtConfig,
+    ]);
     ```
 
-3. Extend the eslint on a project basis by adding rules to `.eslintrc` e.g.
+3. Extend the eslint on a project basis by adding rules to `eslint.config.js` e.g.
 
-    ```json
-    {
-      "extends": "@hs-web-team/eslint-config-node",
-      "settings": {
-        "import/resolver": "webpack"
-      }
-    }
+    ```typescript
+    import { defineConfig } from 'eslint/config';
+    import wtConfig from '@hs-web-team/eslint-config-node';
+
+    export default defineConfig([
+      // Add project-specific ignores here
+      {
+        ignores: ['dist/**'],
+      },
+      // Add project-specific rules here
+      {
+        rules: {
+          'no-console': 'error',
+        },
+      },
+      ...wtConfig, // This will include the shared rules from @hs-web-team/eslint-config-node
+    ]);
     ```
 
 ## Where to use it
