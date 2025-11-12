@@ -58,6 +58,7 @@ This package is currently on v3, which uses ESLint 9's flat config format. The p
 
 - This package is for **backend Node.js projects only**, not browser environments
 - The configuration uses ESLint 9's flat config format (not the legacy `.eslintrc` format)
-- Downstream projects extend this config in their `eslint.config.js` by spreading the imported config
-- The binary script `bin/add-prettier-scripts.js` uses CommonJS (`require`) while the main package is ESM
+- Downstream projects extend this config in their `eslint.config.js` by spreading the imported config using `...wtConfig`
+- Mixed module systems: `bin/add-prettier-scripts.js` uses CommonJS (`require`) while the main package is ESM
 - CI runs on Node 22 and 24 (see `.github/workflows/pr.yml`)
+- No automated tests currently (`npm test` will fail with "Error: no test specified")
