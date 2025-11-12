@@ -26,17 +26,22 @@ When testing changes to this package in downstream projects, you'll typically:
 ### Core Configuration File
 - **`index.js`**: The main ESLint configuration export using ESLint 9's flat config format
   - Uses `@eslint/js`, `typescript-eslint`, and `globals` packages
-  - Applies to `**/*.{js,mjs,cjs,ts,mts,cts}` files
+  - Exports two separate configurations: one for JavaScript files (`**/*.{js,mjs,cjs}`) and one for TypeScript files (`**/*.{ts,mts,cts,tsx}`)
+  - JavaScript config uses `js/recommended`, TypeScript config uses `tseslint.configs.recommended`
   - Includes Node.js, ES2022, and Jest globals
-  - Defines project-wide ignore patterns and custom rules
+  - Common ignores: `node_modules`, `.serverless`, `.webpack`, `dist`, `eslint.config.js`
   - Key custom rules: `no-console` (allows info/warn/error), `max-len` (120 chars), camelcase disabled
 
 ### Prettier Integration
 - **`bin/add-prettier-scripts.js`**: Executable script that consuming projects can run to set up Prettier
+  - Uses CommonJS (`require`) syntax (different from the main package which is ESM)
   - Adds `prettier:check` and `prettier:write` scripts to package.json
   - Creates `.prettierrc.js` file that imports from this package's `.prettierrc.json`
-  - Creates `.prettierignore` file with sensible defaults
-- **`.prettierrc.json`**: Shared Prettier configuration (120 char width, single quotes, trailing commas, etc.)
+  - Creates `.prettierignore` file with sensible defaults (npm-shrinkwrap.json, package-lock.json, .eslintrc, *.html)
+- **`.prettierrc.json`**: Shared Prettier configuration
+  - 120 char width, single quotes, 2-space tabs, trailing commas
+  - Arrow parens: avoid, LF line endings, single attribute per line
+  - Override for YAML files: uses double quotes instead of single
 
 ### Package Details
 - **Type**: ESM module (`"type": "module"`)
