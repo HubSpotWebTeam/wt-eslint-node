@@ -1,8 +1,9 @@
 {
   "name": "@hs-web-team/eslint-config-node",
-  "version": "2.1.2",
+  "version": "3.0.0-next.8",
   "description": "HubSpot Marketing WebTeam ESLint rules for Node.js",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "lint": "npx eslint -c ./index.js *.js --fix",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -11,7 +12,7 @@
     "node": ">=22"
   },
   "bin": {
-    "add-prettier": "./bin/add-prettier-scripts.js"
+    "add-prettier": "bin/add-prettier-scripts.js"
   },
   "repository": {
     "type": "git",
@@ -27,9 +28,13 @@
   },
   "homepage": "https://github.com/HubSpotWebTeam/wt-eslint-node#readme",
   "dependencies": {
-    "eslint": "^8.57.1",
-    "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-plugin-import": "^2.32.0",
-    "prettier": "^3.6.2"
+    "@eslint/eslintrc": "^3.3.1",
+    "@eslint/js": "^9.39.1",
+    "@typescript-eslint/eslint-plugin": "^8.46.3",
+    "@typescript-eslint/parser": "^8.46.3",
+    "globals": "^16.5.0",
+    "prettier": "^3.6.2",
+    "jiti": "^2.6.1",
+    "typescript-eslint": "^8.46.3"
   }
 }

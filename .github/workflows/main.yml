@@ -11,13 +11,13 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: [20, 22]
+        node: [22, 24]
 
-    name: Node ${{ matrix.node }} sample
+    name: Node ${{ matrix.node }} lint
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Run unit tests
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node }}
       - run: npm install

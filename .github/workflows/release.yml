@@ -7,12 +7,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: 24
           registry-url: 'https://registry.npmjs.org'
       - run: npm install
-      - run: npm publish
+      - name: Publish to npm
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          if [[ "$VERSION" =~ -next\. ]]; then
+            echo "Publishing prerelease version $VERSION with tag 'next'"
+            npm publish --tag next
+          elif [[ "$VERSION" =~ -(alpha|beta|rc)\. ]]; then
+            echo "Publishing prerelease version $VERSION with tag 'next'"
+            npm publish --tag next
+          else
+            echo "Publishing stable version $VERSION"
+            npm publish
+          fi
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

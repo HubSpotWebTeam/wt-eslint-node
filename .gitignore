@@ -3,3 +3,4 @@ npm-debug.log*
 yarn-debug.log*
 .DS_Store
 .npmrc
+.claude/settings.local.json
