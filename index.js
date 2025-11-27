@@ -21,8 +21,6 @@ const baseRules = {
       allow: [
         '__dirname',
         '__filename',
-        '_hsg',
-        '_hsq',
       ]
     }
   ],
