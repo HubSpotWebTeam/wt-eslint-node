@@ -22,21 +22,19 @@ This is a list of ESLint rules that are recommended for use with **Hubspot Marke
 2. Add to `eslint.config.js` in project root directory
 
     ```typescript
-    import { defineConfig } from 'eslint/config';
     import wtConfig from '@hs-web-team/eslint-config-node';
 
-    export default defineConfig([
+    export default [
       ...wtConfig,
-    ]);
+    ];
     ```
 
 3. Extend the eslint on a project basis by adding rules to `eslint.config.js` e.g.
 
     ```typescript
-    import { defineConfig } from 'eslint/config';
     import wtConfig from '@hs-web-team/eslint-config-node';
 
-    export default defineConfig([
+    export default [
       // Add project-specific ignores here
       {
         ignores: ['dist/**'],
@@ -48,7 +46,7 @@ This is a list of ESLint rules that are recommended for use with **Hubspot Marke
         },
       },
       ...wtConfig, // This will include the shared rules from @hs-web-team/eslint-config-node
-    ]);
+    ];
     ```
 
 ## Where to use it

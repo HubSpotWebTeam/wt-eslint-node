@@ -1,7 +1,6 @@
 import js from '@eslint/js';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
-import { defineConfig } from 'eslint/config';
 
 // Base rules for all JavaScript files
 const baseRules = {
@@ -47,26 +46,24 @@ const commonIgnores = [
   'eslint.config.js',
 ];
 
-export default defineConfig([
+export default [
+  // Global ignores
+  {
+    ignores: commonIgnores,
+  },
   // Base config for all JavaScript files
+  js.configs.recommended,
   {
     files: ['**/*.{js,mjs,cjs}'],
-    plugins: { js },
-    extends: ['js/recommended'],
     languageOptions: {
       globals: {...globals.node, ...globals.es2022, ...globals.jest},
     },
-    ignores: commonIgnores,
     rules: baseRules,
   },
   // TypeScript config that extends the base config
+  ...tseslint.configs.recommended,
   {
     files: ['**/*.{ts,mts,cts,tsx}'],
-    ...tseslint.configs.recommended,
-    // You can add or override rules specific to TypeScript here
-    rules: {
-      ...baseRules,
-      // Add any TypeScript-specific rules here
-    },
+    rules: baseRules,
   },
-]);
+];
