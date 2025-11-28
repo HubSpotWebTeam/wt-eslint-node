@@ -26,8 +26,13 @@ When testing changes to this package in downstream projects, you'll typically:
 ### Core Configuration File
 - **`index.js`**: The main ESLint configuration export using ESLint 9's flat config format
   - Uses `@eslint/js`, `typescript-eslint`, and `globals` packages
-  - Exports two separate configurations: one for JavaScript files (`**/*.{js,mjs,cjs}`) and one for TypeScript files (`**/*.{ts,mts,cts,tsx}`)
-  - JavaScript config uses `js/recommended`, TypeScript config uses `tseslint.configs.recommended`
+  - Exports an array of configuration objects (flat config format)
+  - Structure:
+    1. Global ignores object
+    2. `js.configs.recommended` for JavaScript baseline
+    3. JavaScript-specific config for `**/*.{js,mjs,cjs}` files
+    4. Spreads `tseslint.configs.recommended` for TypeScript baseline
+    5. TypeScript-specific config for `**/*.{ts,mts,cts,tsx}` files
   - Includes Node.js, ES2022, and Jest globals
   - Common ignores: `node_modules`, `.serverless`, `.webpack`, `dist`, `eslint.config.js`
   - Key custom rules: `no-console` (allows info/warn/error), `max-len` (120 chars), camelcase disabled

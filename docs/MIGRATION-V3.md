@@ -7,9 +7,9 @@
 > This migration requires Node.js v22 or higher and a **manual migration** from `.eslintrc` to `eslint.config.mjs`.
 
 - [ ] Upgrade to Node.js v22 or higher
-- [ ] Upgrade ESLint to v9: `npm install eslint@^9 --save-dev`
-- [ ] Update the package: `npm install @hs-web-team/eslint-config-node@latest`
+- [ ] Update the package: `npm install -D @hs-web-team/eslint-config-node@latest`
 - [ ] **Remove** `@hs-web-team/eslint-config-ts` from dependencies (no longer needed - TypeScript support is now included)
+- [ ] Remove the `--ext .js,.ts` flag from the ESLint command in your project's package.json
 - [ ] Manually create `eslint.config.mjs` (see [Manual Migration Guide](#manual-migration-guide) below)
 - [ ] Delete `.eslintrc` file
 - [ ] Run `npm run lint` to check for any errors
