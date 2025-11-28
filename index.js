@@ -60,10 +60,16 @@ export default [
     },
     rules: baseRules,
   },
-  // TypeScript config that extends the base config
-  ...tseslint.configs.recommended,
+  // TypeScript config - restrict to TypeScript files only
+  ...tseslint.configs.recommended.map(config => ({
+    ...config,
+    files: ['**/*.{ts,mts,cts,tsx}'],
+  })),
   {
     files: ['**/*.{ts,mts,cts,tsx}'],
+    languageOptions: {
+      globals: {...globals.node, ...globals.es2022, ...globals.jest},
+    },
     rules: baseRules,
   },
 ];
