@@ -14,7 +14,15 @@ const baseRules = {
   'comma-dangle': ['warn', 'always-multiline'],
   'arrow-parens': 0,
   'no-plusplus': 0,
-  'no-underscore-dangle': 0,
+  'no-underscore-dangle': [
+    'error',
+    {
+      allow: [
+        '__dirname',
+        '__filename',
+      ]
+    }
+  ],
   'no-confusing-arrow': 0,
   'import/no-unresolved': 0,
   'import/prefer-default-export': 0,
