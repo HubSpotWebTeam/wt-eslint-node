@@ -1,17 +1,18 @@
-# Hubspot Marketing WebTeam ESLint rules for Node.js
+# Hubspot Marketing WebTeam ESLint Configuration
 
-This is a list of ESLint rules that are recommended for use with **Hubspot Marketing WebTeam** projects.
+This package provides ESLint rules and configurations for **Hubspot Marketing WebTeam** projects, supporting both Node.js backend and browser/React applications.
 
 <!-- index-start -->
 
 ## Index
 
-- [Setup](#setup)
+- [Node.js Setup](#nodejs-setup)
+- [Browser/React Setup](#browserreact-setup)
 - [Where to use it](#where-to-use-it)
 - [Using the Prettier Scripts](#using-the-prettier-scripts)
 <!-- index-end -->
 
-## Setup
+## Node.js Setup
 
 1. Install as dev dependency
 
@@ -49,9 +50,42 @@ This is a list of ESLint rules that are recommended for use with **Hubspot Marke
     ];
     ```
 
+## Browser/React Setup
+
+1. Install as dev dependency
+
+    ```sh
+    npm i -D @hs-web-team/eslint-config-node@latest
+    ```
+
+2. Add to `eslint.config.js` in project root directory
+
+    ```typescript
+    import wtBrowserConfig from '@hs-web-team/eslint-config-node/browser';
+
+    export default [
+      ...wtBrowserConfig,
+    ];
+    ```
+
+3. The browser configuration includes:
+   - ESLint recommended rules for JavaScript
+   - TypeScript support with typescript-eslint
+   - React support with eslint-plugin-react
+   - React Hooks rules with eslint-plugin-react-hooks
+   - Accessibility rules with eslint-plugin-jsx-a11y
+   - Browser globals (window, document, etc.) and custom globals (jQuery, $, Invoca)
+
+For detailed browser configuration documentation and migration guides, see [examples/browser-usage.md](./examples/browser-usage.md).
+
 ## Where to use it
 
-This package is intended to be used as a starting point for ESLint rules for Backend Node.js projects, and not for use in browser environments.
+This package provides two configurations:
+
+- **Node.js configuration** (default export): For backend Node.js projects
+- **Browser configuration** (`/browser` export): For browser-based projects including React applications
+
+Choose the appropriate configuration based on your project type.
 
 ## Using the Prettier Scripts
 
