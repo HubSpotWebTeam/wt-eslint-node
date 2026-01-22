@@ -4,14 +4,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-This is an ESLint configuration package (`@hs-web-team/eslint-config-node`) for HubSpot Marketing WebTeam Node.js projects. It provides shared ESLint rules and Prettier configuration for backend Node.js projects.
+This is an ESLint configuration package (`@hs-web-team/eslint-config-node`) for HubSpot Marketing WebTeam projects. It provides shared ESLint rules and Prettier configuration for both backend Node.js projects and browser/React applications.
 
 ## Key Commands
 
 ### Linting
+
 ```bash
 npm run lint
 ```
+
 Runs ESLint on the codebase with auto-fix enabled. Uses the configuration defined in `index.js`.
 
 ### Testing in Projects
@@ -23,8 +25,10 @@ When testing changes to this package in downstream projects, you'll typically:
 
 ## Architecture
 
-### Core Configuration File
-- **`index.js`**: The main ESLint configuration export using ESLint 9's flat config format
+### Core Configuration Files
+
+#### `index.js` - Node.js Configuration
+- The main ESLint configuration export using ESLint 9's flat config format
   - Uses `@eslint/js`, `typescript-eslint`, and `globals` packages
   - Exports an array of configuration objects (flat config format)
   - Structure:
@@ -36,6 +40,20 @@ When testing changes to this package in downstream projects, you'll typically:
   - Includes Node.js, ES2022, and Jest globals
   - Common ignores: `node_modules`, `.serverless`, `.webpack`, `dist`, `eslint.config.js`
   - Key custom rules: `no-console` (allows info/warn/error), `max-len` (120 chars), camelcase disabled
+
+#### `browser.js` - Browser/React Configuration
+- Browser and React-focused ESLint configuration using ESLint 9's flat config format
+  - Uses `@eslint/js`, `typescript-eslint`, `globals`, and React-specific plugins
+  - Includes `eslint-plugin-react`, `eslint-plugin-react-hooks`, and `eslint-plugin-jsx-a11y`
+  - Supports both JavaScript/JSX and TypeScript/TSX files
+  - Structure:
+    1. Global ignores (node_modules, dist, build, .next, coverage)
+    2. Base JavaScript/JSX config with browser globals
+    3. React plugin configuration
+    4. TypeScript config with browser globals
+    5. React plugin configuration for TypeScript files
+  - Includes browser, ES2021, and Jest globals, plus custom globals ($, jQuery, Invoca)
+  - Key custom rules: Similar base rules to Node config, plus React-specific rules
 
 ### Prettier Integration
 - **`bin/add-prettier-scripts.js`**: Executable script that consuming projects can run to set up Prettier
@@ -51,7 +69,9 @@ When testing changes to this package in downstream projects, you'll typically:
 ### Package Details
 - **Type**: ESM module (`"type": "module"`)
 - **Node requirement**: >= 22
-- **Main export**: `index.js`
+- **Exports**:
+  - Main export (`.`): `index.js` - Node.js configuration
+  - Browser export (`./browser`): `browser.js` - Browser/React configuration
 - **Binary command**: `add-prettier` maps to `bin/add-prettier-scripts.js`
 
 ### Migration Context
@@ -61,9 +81,12 @@ This package is currently on v3, which uses ESLint 9's flat config format. The p
 
 ## Important Notes
 
-- This package is for **backend Node.js projects only**, not browser environments
+- This package supports both **backend Node.js projects** (default export) and **browser/React projects** (`/browser` export)
 - The configuration uses ESLint 9's flat config format (not the legacy `.eslintrc` format)
-- Downstream projects extend this config in their `eslint.config.js` by spreading the imported config using `...wtConfig`
+- Downstream projects extend this config in their `eslint.config.js` by spreading the imported config:
+  - Node.js: `...wtConfig`
+  - Browser: `...wtBrowserConfig`
 - Mixed module systems: `bin/add-prettier-scripts.js` uses CommonJS (`require`) while the main package is ESM
 - CI runs on Node 22 and 24 (see `.github/workflows/pr.yml`)
 - No automated tests currently (`npm test` will fail with "Error: no test specified")
+- Detailed browser configuration documentation available in `examples/browser-usage.md`
