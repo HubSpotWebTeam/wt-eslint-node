@@ -1,12 +1,13 @@
 {
   "name": "@hs-web-team/eslint-config-node",
-  "version": "3.1.2",
+  "version": "3.1.3",
   "description": "HubSpot Marketing WebTeam ESLint rules for Node.js",
   "main": "index.js",
   "type": "module",
   "exports": {
     ".": "./index.js",
-    "./browser": "./browser.js"
+    "./browser": "./browser.js",
+    "./.prettierrc.json": "./.prettierrc.json"
   },
   "scripts": {
     "lint": "npx eslint -c ./index.js *.js --fix",
@@ -41,7 +42,7 @@
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",
-    "globals": "^17.0.0",
+    "globals": "^17.1.0",
     "jiti": "^2.6.1",
     "prettier": "^3.8.1",
     "typescript-eslint": "^8.53.1"
