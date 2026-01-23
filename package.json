@@ -6,7 +6,8 @@
   "type": "module",
   "exports": {
     ".": "./index.js",
-    "./browser": "./browser.js"
+    "./browser": "./browser.js",
+    "./.prettierrc.json": "./.prettierrc.json"
   },
   "scripts": {
     "lint": "npx eslint -c ./index.js *.js --fix",
