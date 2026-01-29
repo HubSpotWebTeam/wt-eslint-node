@@ -118,7 +118,7 @@ This package provides shared Cypress configuration for E2E testing.
 1. Install dependencies
 
     ```sh
-    npm i -D cypress @cypress/webpack-preprocessor @badeball/cypress-cucumber-preprocessor webpack ts-loader js-yaml
+    npm i -D cypress @badeball/cypress-cucumber-preprocessor esbuild js-yaml
     ```
 
 2. Create `cypress.config.js` in project root
