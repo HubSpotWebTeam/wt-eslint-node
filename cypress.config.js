@@ -2,7 +2,7 @@ const yaml = require('js-yaml');
 const fs = require('fs');
 const path = require('path');
 const { addCucumberPreprocessorPlugin } = require('@badeball/cypress-cucumber-preprocessor');
-const webpack = require('@cypress/webpack-preprocessor');
+const { createEsbuildPlugin } = require('@badeball/cypress-cucumber-preprocessor/esbuild');
 
 const DEV = 'DEV';
 const QA = 'qa';
@@ -87,38 +87,13 @@ const getBaseUrls = () => {
 async function setupNodeEvents(on, config) {
   // This is required for the preprocessor to be able to generate JSON reports after each run
   await addCucumberPreprocessorPlugin(on, config);
+
+  // Use esbuild for fast TypeScript and feature file processing
   on(
     'file:preprocessor',
-    webpack({
-      webpackOptions: {
-        resolve: {
-          extensions: ['.ts', '.js'],
-        },
-        module: {
-          rules: [
-            {
-              test: /\.ts$/,
-              exclude: [/node_modules/],
-              use: [
-                {
-                  loader: 'ts-loader',
-                },
-              ],
-            },
-            {
-              test: /\.feature$/,
-              use: [
-                {
-                  loader: '@badeball/cypress-cucumber-preprocessor/webpack',
-                  options: config,
-                },
-              ],
-            },
-          ],
-        },
-      },
-    }),
+    createEsbuildPlugin(config),
   );
+
   return config;
 }
 
