@@ -7,7 +7,7 @@ This package provides a shared Cypress configuration for E2E testing in HubSpot 
 1. Install the package and Cypress dependencies:
 
 ```bash
-npm install --save-dev @hs-web-team/eslint-config-node cypress @cypress/webpack-preprocessor @badeball/cypress-cucumber-preprocessor webpack ts-loader js-yaml
+npm install --save-dev @hs-web-team/eslint-config-node cypress @badeball/cypress-cucumber-preprocessor esbuild js-yaml
 ```
 
 2. If using TypeScript:
@@ -88,9 +88,9 @@ The shared configuration includes:
 ### E2E Configuration
 
 - **Spec Pattern**: `cypress/e2e/*.cy.js`
-- **Cucumber Support**: Includes Cucumber preprocessor setup
-- **TypeScript Support**: Configured with ts-loader for `.ts` files
-- **Webpack Preprocessor**: Handles `.feature` files and TypeScript
+- **Cucumber Support**: Includes Cucumber preprocessor setup with esbuild
+- **TypeScript Support**: Native TypeScript support via esbuild (no additional loader needed)
+- **esbuild Preprocessor**: Fast bundling for `.feature` files, TypeScript, and JavaScript
 
 ### Environment Utilities
 
@@ -230,7 +230,7 @@ module.exports = defineConfig({
   e2e: {
     ...config.e2e,
     async setupNodeEvents(on, cypressConfig) {
-      // Call shared setup first
+      // Call shared setup first (includes esbuild preprocessor and Cucumber setup)
       const updatedConfig = await config.e2e.setupNodeEvents(on, cypressConfig);
 
       // Add your custom tasks/events
@@ -327,20 +327,41 @@ Feature: Login
     Then I should see the dashboard
 ```
 
+## Cypress Version Requirements
+
+This configuration requires **Cypress 14.0.0 or higher**. Cypress 14+ includes:
+
+- Improved performance for component test runs
+- Support for latest React, Angular, Next.js, Svelte, and Vite versions
+- Seamless handling of Chrome's document.domain deprecation
+- Upgraded Electron with Chromium 130+ for enhanced stability
+- Better `cy.origin()` support for cross-subdomain navigation
+
+Current latest version: Cypress 15.9.0 (January 2026)
+
+## Why esbuild Instead of Webpack?
+
+The configuration uses **esbuild** instead of webpack for several reasons:
+
+- ⚡ **Much faster** - esbuild is 10-100x faster than webpack
+- 🎯 **Native TypeScript support** - No need for ts-loader or additional configuration
+- 📦 **Smaller footprint** - Fewer dependencies to install and maintain
+- 🔧 **Simpler setup** - Works out of the box with the Cucumber preprocessor
+
 ## Troubleshooting
 
 ### Module Not Found Errors
 
 Ensure all required dependencies are installed:
 ```bash
-npm install --save-dev cypress @cypress/webpack-preprocessor webpack ts-loader js-yaml
+npm install --save-dev cypress @badeball/cypress-cucumber-preprocessor esbuild js-yaml
 ```
 
-### Webpack Compilation Errors
+### Compilation Errors
 
-If using Cucumber, ensure `@badeball/cypress-cucumber-preprocessor` is installed:
+If you see compilation errors with TypeScript files, ensure esbuild is installed:
 ```bash
-npm install --save-dev @badeball/cypress-cucumber-preprocessor
+npm install --save-dev esbuild
 ```
 
 ### Environment Configuration Not Loading
