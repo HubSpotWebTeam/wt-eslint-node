@@ -91,8 +91,9 @@ When testing changes to this package in downstream projects, you'll typically:
     - Viewport: 1920x1080
     - Retries: 1 retry in run mode, 0 in open mode
     - Screenshots on failure enabled, video disabled by default
-  - Includes Cucumber preprocessor setup with webpack
-  - TypeScript support via ts-loader
+  - Uses **esbuild** preprocessor for fast bundling (much faster than webpack)
+  - Includes Cucumber preprocessor setup with native esbuild support
+  - Native TypeScript support via esbuild (no additional loader needed)
   - Spec pattern: `cypress/e2e/*.cy.js`
   - Exported utilities:
     - `config`: Main Cypress configuration object
