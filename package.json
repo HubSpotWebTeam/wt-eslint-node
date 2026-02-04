@@ -9,7 +9,7 @@
     "./browser": "./browser.js",
     "./.prettierrc.json": "./.prettierrc.json",
     "./.stylelintrc.json": "./.stylelintrc.json",
-    "./cypress.config": "./cypress.config.js"
+    "./cypress.config.js": "./cypress.config.js"
   },
   "scripts": {
     "lint": "npx eslint -c ./index.js *.js --fix",
@@ -49,19 +49,19 @@
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",
-    "globals": "^17.2.0",
+    "globals": "^17.3.0",
     "jiti": "^2.6.1",
     "prettier": "^3.8.1",
     "typescript-eslint": "^8.54.0"
   },
   "peerDependencies": {
-    "@badeball/cypress-cucumber-preprocessor": "^20.0.0",
-    "cypress": "^14.5.2",
+    "@badeball/cypress-cucumber-preprocessor": "^22.2.0",
+    "cypress": "^15.10.0",
     "esbuild": "^0.27.2",
     "js-yaml": "^4.1.1",
     "stylelint": "^16.22.0",
-    "stylelint-config-standard": "^36.0.1",
-    "stylelint-config-standard-scss": "^13.1.0"
+    "stylelint-config-standard": "^40.0.0",
+    "stylelint-config-standard-scss": "^17.0.0"
   },
   "peerDependenciesMeta": {
     "stylelint": {
