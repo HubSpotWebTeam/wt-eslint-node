@@ -8,6 +8,8 @@ This package provides ESLint rules and configurations for **Hubspot Marketing We
 
 - [Node.js Setup](#nodejs-setup)
 - [Browser/React Setup](#browserreact-setup)
+- [Stylelint Setup](#stylelint-setup)
+- [Cypress Setup](#cypress-setup)
 - [Where to use it](#where-to-use-it)
 - [Using the Prettier Scripts](#using-the-prettier-scripts)
 <!-- index-end -->
@@ -78,14 +80,90 @@ This package provides ESLint rules and configurations for **Hubspot Marketing We
 
 For detailed browser configuration documentation and migration guides, see [examples/browser-usage.md](./examples/browser-usage.md).
 
+## Stylelint Setup
+
+This package provides shared Stylelint configuration for SCSS/CSS linting.
+
+1. Install dependencies
+
+    ```sh
+    npm i -D stylelint stylelint-config-standard-scss
+    ```
+
+2. Create `.stylelintrc.json` in project root
+
+    ```json
+    {
+      "extends": "@hs-web-team/eslint-config-node/.stylelintrc.json"
+    }
+    ```
+
+3. Add scripts to package.json
+
+    ```json
+    {
+      "scripts": {
+        "stylelint:check": "stylelint '**/*.{css,scss}'",
+        "stylelint:fix": "stylelint '**/*.{css,scss}' --fix"
+      }
+    }
+    ```
+
+For detailed Stylelint configuration documentation, see [examples/stylelint-usage.md](./examples/stylelint-usage.md).
+
+## Cypress Setup
+
+This package provides shared Cypress configuration for E2E testing.
+
+1. Install dependencies
+
+    ```sh
+    npm i -D cypress @badeball/cypress-cucumber-preprocessor esbuild js-yaml
+    ```
+
+2. Create `cypress.config.js` in project root
+
+    ```javascript
+    const { defineConfig } = require('cypress');
+    const { config, envs, getBaseUrls } = require('@hs-web-team/eslint-config-node/cypress.config');
+
+    module.exports = defineConfig({
+      ...config,
+      e2e: {
+        ...config.e2e,
+        baseUrl: 'http://localhost:3000',
+      },
+      env: {
+        ...envs,
+      },
+    });
+    ```
+
+3. Add scripts to package.json
+
+    ```json
+    {
+      "scripts": {
+        "cypress:open": "cypress open",
+        "cypress:run": "cypress run",
+        "test:e2e": "cypress run"
+      }
+    }
+    ```
+
+For detailed Cypress configuration documentation including HubSpot-specific features, see [examples/cypress-usage.md](./examples/cypress-usage.md).
+
 ## Where to use it
 
-This package provides two configurations:
+This package provides multiple configurations:
 
 - **Node.js configuration** (default export): For backend Node.js projects
 - **Browser configuration** (`/browser` export): For browser-based projects including React applications
+- **Stylelint configuration** (`.stylelintrc.json` export): For SCSS/CSS linting
+- **Cypress configuration** (`cypress.config` export): For E2E testing with Cypress
+- **Prettier configuration** (`.prettierrc.json` export): For code formatting
 
-Choose the appropriate configuration based on your project type.
+Choose the appropriate configurations based on your project needs.
 
 ## Using the Prettier Scripts
 
