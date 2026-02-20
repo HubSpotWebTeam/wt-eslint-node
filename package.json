@@ -9,7 +9,8 @@
     "./browser": "./browser.js",
     "./.prettierrc.json": "./.prettierrc.json",
     "./.stylelintrc.json": "./.stylelintrc.json",
-    "./cypress.config.js": "./cypress.config.js"
+    "./cypress.config.js": "./cypress.config.js",
+    "./cypress.config.ts": "./cypress.config.ts"
   },
   "scripts": {
     "lint": "npx eslint -c ./index.js *.js --fix",
@@ -40,6 +41,7 @@
   },
   "homepage": "https://github.com/HubSpotWebTeam/wt-eslint-node#readme",
   "dependencies": {
+    "@bahmutov/cypress-esbuild-preprocessor": "^2.2.3",
     "@eslint/eslintrc": "^3.3.3",
     "@eslint/js": "^9.39.1",
     "@typescript-eslint/eslint-plugin": "^8.46.3",

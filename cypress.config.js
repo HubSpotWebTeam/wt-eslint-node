@@ -1,6 +1,7 @@
 const yaml = require('js-yaml');
 const fs = require('fs');
 const path = require('path');
+const createBundler = require('@bahmutov/cypress-esbuild-preprocessor');
 const { addCucumberPreprocessorPlugin } = require('@badeball/cypress-cucumber-preprocessor');
 const { createEsbuildPlugin } = require('@badeball/cypress-cucumber-preprocessor/esbuild');
 
@@ -91,7 +92,7 @@ async function setupNodeEvents(on, config) {
   // Use esbuild for fast TypeScript and feature file processing
   on(
     'file:preprocessor',
-    createEsbuildPlugin(config),
+    createBundler({ plugins: [createEsbuildPlugin(config)] }),
   );
 
   return config;
