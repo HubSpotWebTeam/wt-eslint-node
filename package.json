@@ -9,8 +9,7 @@
     "./browser": "./browser.js",
     "./.prettierrc.json": "./.prettierrc.json",
     "./.stylelintrc.json": "./.stylelintrc.json",
-    "./cypress.config.js": "./cypress.config.js",
-    "./cypress.config.ts": "./cypress.config.ts"
+    "./cypress.config": "./cypress.config.cjs"
   },
   "scripts": {
     "lint": "npx eslint -c ./index.js *.js --fix",

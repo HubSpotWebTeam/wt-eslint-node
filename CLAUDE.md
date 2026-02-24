@@ -83,7 +83,7 @@ When testing changes to this package in downstream projects, you'll typically:
   - Documentation: `examples/stylelint-usage.md`
 
 ### Cypress Configuration
-- **`cypress.config.js`**: Shared Cypress configuration for E2E testing
+- **`cypress.config.cjs`**: Shared Cypress configuration for E2E testing
   - Uses CommonJS (`require`) syntax
   - Core settings:
     - Disables Chrome web security for cross-origin testing
@@ -111,7 +111,7 @@ When testing changes to this package in downstream projects, you'll typically:
   - Browser export (`./browser`): `browser.js` - Browser/React ESLint configuration
   - Prettier export (`./.prettierrc.json`): `.prettierrc.json` - Prettier configuration
   - Stylelint export (`./.stylelintrc.json`): `.stylelintrc.json` - Stylelint configuration
-  - Cypress export (`./cypress.config`): `cypress.config.js` - Cypress configuration
+  - Cypress export (`./cypress.config`): `cypress.config.cjs` - Cypress configuration
 - **Binary command**: `add-prettier` maps to `bin/add-prettier-scripts.js`
 
 ### Migration Context
@@ -135,7 +135,7 @@ This package is currently on v3, which uses ESLint 9's flat config format. The p
   - Cypress: Import and spread in `cypress.config.js`
 - Mixed module systems:
   - Main package is ESM (`index.js`, `browser.js`)
-  - Utility scripts use CommonJS (`bin/add-prettier-scripts.js`, `cypress.config.js`)
+  - Utility scripts use CommonJS (`bin/add-prettier-scripts.js`, `cypress.config.cjs`)
 - CI runs on Node 22 and 24 (see `.github/workflows/pr.yml`)
 - No automated tests currently (`npm test` will fail with "Error: no test specified")
 - Detailed documentation available in `examples/`:
