@@ -221,19 +221,22 @@ module.exports = defineConfig({
 
 ### Add Custom setupNodeEvents
 
+`setupNodeEvents` is exported directly and is also embedded inside `config.e2e`. If you override it without calling the package's version first, you'll silently lose the Cucumber preprocessor and esbuild setup.
+
+Import `setupNodeEvents` directly and call it before your own logic:
+
 ```javascript
 const { defineConfig } = require('cypress');
-const { config } = require('@hs-web-team/eslint-config-node/cypress.config');
+const { config, setupNodeEvents: wtSetupNodeEvents } = require('@hs-web-team/eslint-config-node/cypress.config');
 
 module.exports = defineConfig({
   ...config,
   e2e: {
     ...config.e2e,
-    async setupNodeEvents(on, cypressConfig) {
-      // Call shared setup first (includes esbuild preprocessor and Cucumber setup)
-      const updatedConfig = await config.e2e.setupNodeEvents(on, cypressConfig);
+    async setupNodeEvents(on, cfg) {
+      // sets up esbuild preprocessor and Cucumber
+      await wtSetupNodeEvents(on, cfg);
 
-      // Add your custom tasks/events
       on('task', {
         log(message) {
           console.log(message);
@@ -241,11 +244,13 @@ module.exports = defineConfig({
         },
       });
 
-      return updatedConfig;
+      return cfg;
     },
   },
 });
 ```
+
+If you don't need custom node events, omit `setupNodeEvents` entirely and just spread `...config.e2e` — the package's setup runs automatically.
 
 ## Integration with CI/CD
 

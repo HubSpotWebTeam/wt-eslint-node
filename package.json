@@ -9,7 +9,15 @@
     "./browser": "./browser.js",
     "./.prettierrc.json": "./.prettierrc.json",
     "./.stylelintrc.json": "./.stylelintrc.json",
-    "./cypress.config": "./cypress.config.cjs"
+    "./cypress.config": {
+      "types": "./cypress.config.d.ts",
+      "require": "./cypress.config.cjs"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "cypress.config": ["./cypress.config.d.ts"]
+    }
   },
   "scripts": {
     "lint": "npx eslint -c ./index.js *.js --fix",

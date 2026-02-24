@@ -1,16 +1,16 @@
-const yaml = require('js-yaml');
-const fs = require('fs');
-const path = require('path');
-const createBundler = require('@bahmutov/cypress-esbuild-preprocessor');
-const { addCucumberPreprocessorPlugin } = require('@badeball/cypress-cucumber-preprocessor');
-const { createEsbuildPlugin } = require('@badeball/cypress-cucumber-preprocessor/esbuild');
+import yaml from 'js-yaml';
+import fs from 'fs';
+import path from 'path';
+import createBundler from '@bahmutov/cypress-esbuild-preprocessor';
+import { addCucumberPreprocessorPlugin } from '@badeball/cypress-cucumber-preprocessor';
+import { createEsbuildPlugin } from '@badeball/cypress-cucumber-preprocessor/esbuild';
 
 const DEV = 'DEV';
 const QA = 'qa';
 const PROD = 'prod';
 const currentEnv = QA;
 
-const envs = {
+export const envs = {
   currentEnv,
   DEV,
   QA,
@@ -24,7 +24,7 @@ const envs = {
  * @param {string} currDir - the current working directory path to search from
  * @returns {string} The absolute path of the project's root directory
  */
-const getRootDir = currDir => {
+const getRootDir = (currDir: string): string => {
   if (fs.existsSync(path.join(currDir, 'hubspot.config.yml'))) return currDir;
   const parentDir = path.dirname(currDir);
   if (parentDir === currDir) {
@@ -37,7 +37,7 @@ const getRootDir = currDir => {
  * @returns {string|null} The `baseUrl` set for the `DEV` portal in `hubspot.config.yml`
  *   or `null` if this is not the dev environment or no such property exists.
  */
-const getDevBaseUrl = () => {
+export const getDevBaseUrl = (): string | null => {
   try {
     global.console.log(
       'To test a dev URL, add the `baseUrl` property to your `DEV` portal configuration in `hubspot.config.yml`',
@@ -45,11 +45,10 @@ const getDevBaseUrl = () => {
 
     const root = getRootDir(__dirname);
     const configPath = path.resolve(root, 'hubspot.config.yml');
-    const config = fs.readFileSync(configPath, 'utf8');
-    const { portals } = yaml.load(config);
+    const fileContents = fs.readFileSync(configPath, 'utf8');
+    const { portals } = yaml.load(fileContents) as { portals: Array<{ name: string; baseUrl?: string }> };
     const devPortal = portals.find(portal => portal.name === 'DEV');
-    const devBaseUrl = devPortal.baseUrl;
-    return devBaseUrl || null;
+    return devPortal?.baseUrl || null;
   } catch (error) {
     global.console.error(error);
     return null;
@@ -60,21 +59,20 @@ const getDevBaseUrl = () => {
  * @description Get the baseUrls for different environments from the ci config file for local test execution.
  * @returns {object} baseUrls - The base urls object
  */
-const getBaseUrls = () => {
+export const getBaseUrls = (): Record<string, string | null> | null => {
   let fileContents = '';
-  let ciConfig = {};
-  const baseUrls = {};
+  let ciConfig: { regression?: { e2eTestEnvironment?: Array<{ name: string; url: string }> } } = {};
+  const baseUrls: Record<string, string | null> = {};
   baseUrls[envs.DEV] = getDevBaseUrl();
 
   const fileExist = fs.existsSync('.ci/config.yml');
   if (fileExist) {
     fileContents = fs.readFileSync('.ci/config.yml', 'utf8');
-    ciConfig = yaml.load(fileContents);
-    if (ciConfig.regression.e2eTestEnvironment && ciConfig.regression.e2eTestEnvironment.length > 0) {
+    ciConfig = yaml.load(fileContents) as typeof ciConfig;
+    if (ciConfig.regression?.e2eTestEnvironment && ciConfig.regression.e2eTestEnvironment.length > 0) {
       try {
         ciConfig.regression.e2eTestEnvironment.forEach(item => {
-          const envName = item.name;
-          baseUrls[envName] = item.url;
+          baseUrls[item.name] = item.url;
         });
       } catch (error) {
         console.error('Error reading the base urls from the ci config file:', error);
@@ -85,25 +83,24 @@ const getBaseUrls = () => {
   return baseUrls || null;
 };
 
-async function setupNodeEvents(on, config) {
-  // This is required for the preprocessor to be able to generate JSON reports after each run
+async function setupNodeEvents(
+  on: Cypress.PluginEvents,
+  config: Cypress.PluginConfigOptions,
+): Promise<Cypress.PluginConfigOptions> {
   await addCucumberPreprocessorPlugin(on, config);
-
-  // Use esbuild for fast TypeScript and feature file processing
   on(
     'file:preprocessor',
     createBundler({ plugins: [createEsbuildPlugin(config)] }),
   );
-
   return config;
 }
 
-const e2e = {
+const e2e: Cypress.EndToEndConfigOptions = {
   specPattern: 'cypress/e2e/*.cy.js',
   setupNodeEvents,
 };
 
-const config = {
+export const config: Cypress.ConfigOptions = {
   chromeWebSecurity: false,
   defaultCommandTimeout: 20000,
   e2e,
@@ -120,12 +117,4 @@ const config = {
   video: false,
   viewportHeight: 1080,
   viewportWidth: 1920,
-};
-
-module.exports = {
-  config,
-  envs,
-  getDevBaseUrl,
-  getBaseUrls,
-  setupNodeEvents,
 };
