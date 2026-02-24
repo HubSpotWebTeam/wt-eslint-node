@@ -53,13 +53,13 @@
     "globals": "^17.3.0",
     "jiti": "^2.6.1",
     "prettier": "^3.8.1",
-    "typescript-eslint": "^8.54.0"
+    "typescript-eslint": "^8.54.0",
+    "esbuild": "^0.27.2",
+    "js-yaml": "^4.1.1"
   },
   "peerDependencies": {
     "@badeball/cypress-cucumber-preprocessor": "^24.0.0",
     "cypress": "^15.0.0",
-    "esbuild": "^0.27.2",
-    "js-yaml": "^4.1.1",
     "stylelint": "^17.1.1",
     "stylelint-config-standard": "^40.0.0",
     "stylelint-config-standard-scss": "^17.0.0"
@@ -75,15 +75,6 @@
       "optional": true
     },
     "cypress": {
-      "optional": true
-    },
-    "@badeball/cypress-cucumber-preprocessor": {
-      "optional": true
-    },
-    "esbuild": {
-      "optional": true
-    },
-    "js-yaml": {
       "optional": true
     }
   }
