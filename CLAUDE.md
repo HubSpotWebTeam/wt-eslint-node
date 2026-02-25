@@ -94,6 +94,7 @@ When testing changes to this package in downstream projects, you'll typically:
   - Uses **esbuild** preprocessor for fast bundling (much faster than webpack)
   - Includes Cucumber preprocessor setup with native esbuild support
   - Native TypeScript support via esbuild (no additional loader needed)
+  - `@badeball/cypress-cucumber-preprocessor`, `@bahmutov/cypress-esbuild-preprocessor`, `esbuild`, and `js-yaml` are all bundled — consumers only need to install `cypress`
   - Spec pattern: `cypress/e2e/*.cy.js`
   - Exported utilities:
     - `config`: Main Cypress configuration object
