@@ -115,43 +115,13 @@ For detailed Stylelint configuration documentation, see [examples/stylelint-usag
 
 This package provides shared Cypress configuration for E2E testing.
 
-1. Install dependencies
+1. Install Cypress
 
     ```sh
-    npm i -D cypress @badeball/cypress-cucumber-preprocessor esbuild js-yaml
+    npm i -D cypress@15
     ```
 
-2. Create `cypress.config.js` in project root
-
-    ```javascript
-    const { defineConfig } = require('cypress');
-    const { config, envs, getBaseUrls } = require('@hs-web-team/eslint-config-node/cypress.config');
-
-    module.exports = defineConfig({
-      ...config,
-      e2e: {
-        ...config.e2e,
-        baseUrl: 'http://localhost:3000',
-      },
-      env: {
-        ...envs,
-      },
-    });
-    ```
-
-3. Add scripts to package.json
-
-    ```json
-    {
-      "scripts": {
-        "cypress:open": "cypress open",
-        "cypress:run": "cypress run",
-        "test:e2e": "cypress run"
-      }
-    }
-    ```
-
-For detailed Cypress configuration documentation including HubSpot-specific features, see [examples/cypress-usage.md](./examples/cypress-usage.md).
+For detailed Cypress configuration and migration documentation, see [examples/cypress-usage.md](./examples/cypress-usage.md).
 
 ## Where to use it
 

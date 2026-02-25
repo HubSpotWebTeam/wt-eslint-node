@@ -4,13 +4,11 @@ This package provides a shared Cypress configuration for E2E testing in HubSpot 
 
 ## Installation
 
-Install the package and Cypress:
+For full setup instructions, see the [Cypress Framework Setup](https://git.hubteam.com/pages/MarketingWebTeam/webteam-docs/docs/developers/coding-on-the-web-team/software-testing/cypress-framework-setup/) guide.
 
 ```bash
-npm install --save-dev @hs-web-team/eslint-config-node cypress
+npm i -D cypress@15
 ```
-
-All other dependencies (`esbuild`, `js-yaml`, `@bahmutov/cypress-esbuild-preprocessor`, `@badeball/cypress-cucumber-preprocessor`) are bundled with this package.
 
 ## Usage
 
@@ -59,14 +57,11 @@ module.exports = defineConfig({
 ### Core Configuration
 
 - **Chrome Web Security**: Disabled for cross-origin testing
-- **Timeouts**: 20s for default command, page load, and response
+- **Timeouts**: 20s for default command, page load, and response (Cypress default is 4s)
 - **Viewport**: 1920x1080
-- **Port**: 3500 (Cypress dev server)
 - **Retries**: 1 in run mode, 0 in open mode
-- **Screenshots**: Enabled on failure
 - **Video**: Disabled by default
 - **Tests kept in memory**: 0 (prevents memory issues)
-- **Trash assets before runs**: Enabled
 
 ### E2E Configuration
 
@@ -154,19 +149,104 @@ module.exports = defineConfig({
 
 If you don't need custom node events, omit `setupNodeEvents` entirely and just spread `...config.e2e`.
 
-## Cucumber/BDD Support
+## Migrating from `@hs-web-team/eslint-config-browser`
 
-The configuration includes Cucumber preprocessor setup automatically. Create `.cypress-cucumber-preprocessorrc.json` in your project root:
+### 1. Update the import
 
-```json
-{
-  "stepDefinitions": "cypress/support/step_definitions/**/*.{js,ts}",
-  "json": {
-    "enabled": true,
-    "output": "cypress/results/cucumber-report.json"
-  }
-}
+**JavaScript:**
+```javascript
+// Before
+const { getDevBaseUrl, getBaseUrls, config, envs } = require('@hs-web-team/eslint-config-browser/cypress.config.js');
+
+// After
+const { getDevBaseUrl, getBaseUrls, config, envs } = require('@hs-web-team/eslint-config-node/cypress.config');
 ```
+
+**TypeScript (module format stays the same — ESM `import`/`export default` still works):**
+```typescript
+// Before
+import { getDevBaseUrl, getBaseUrls, config, envs } from '@hs-web-team/eslint-config-browser/cypress.config.js';
+
+// After
+import { getDevBaseUrl, getBaseUrls, envs, config as wtConfig } from '@hs-web-team/eslint-config-node/cypress.config';
+```
+
+### 2. Remove manual `setupNodeEvents`
+
+Cucumber and esbuild are bundled into `config.e2e.setupNodeEvents`. Remove your manual `setupNodeEvents` function entirely and spread `...config.e2e` to inherit it automatically.
+
+If you need to add custom tasks on top, see [Add Custom setupNodeEvents](#add-custom-setupnodeevents).
+
+### 3. Update the config structure
+
+The old pattern built the full `e2e` object from scratch — repeating settings already in the bundle — then assigned it:
+
+```javascript
+const customConfig = { ...config };
+const e2e = {
+  specPattern: 'cypress/e2e/**/*.feature',
+  baseUrl,
+  setupNodeEvents, // manual webpack + cucumber setup
+  defaultCommandTimeout: 20000, // already in bundle
+  retries: { runMode: 1, openMode: 0 }, // already in bundle
+  // ...
+};
+customConfig.e2e = e2e;
+module.exports = defineConfig(customConfig);
+```
+
+The new pattern spreads `...config.e2e` to inherit bundled settings (including `setupNodeEvents`) and only adds project-specific overrides:
+
+**JavaScript:**
+```javascript
+module.exports = defineConfig({
+  ...config,
+  e2e: {
+    ...config.e2e,
+    specPattern: 'cypress/e2e/**/*.feature',
+    baseUrl,
+    supportFile: 'cypress/support/e2e.js',
+    reporter: 'mochawesome',
+    reporterOptions: {
+      reportDir: 'cypress/results',
+      overwrite: false,
+      html: true,
+      json: true,
+    },
+  },
+});
+```
+
+**TypeScript:**
+```typescript
+export default defineConfig({
+  e2e: {
+    ...wtConfig.e2e,
+    specPattern: 'cypress/e2e/**/*.feature',
+    baseUrl,
+    supportFile: 'cypress/support/e2e.ts',
+    reporter: 'mochawesome',
+    reporterOptions: {
+      reportDir: 'cypress/results',
+      overwrite: false,
+      html: true,
+      json: true,
+    },
+  },
+  blockHosts: '*.google-analytics.com',
+});
+```
+
+### 4. Keep project-specific settings not in the bundle
+
+These are not included in the bundle and must be carried over manually if your project uses them:
+
+- `reporter` and `reporterOptions` (e.g. mochawesome)
+- `supportFile`
+- `blockHosts`
+- `fixturesFolder`, `screenshotsFolder`, `videosFolder`
+- `testIsolation`
+- `specPattern` (if using `.feature` files — bundle default is `cypress/e2e/*.cy.js`)
 
 ## Troubleshooting
 
