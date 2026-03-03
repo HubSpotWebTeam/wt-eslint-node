@@ -106,7 +106,7 @@ When testing changes to this package in downstream projects, you'll typically:
 
 ### Package Details
 - **Type**: ESM module (`"type": "module"`)
-- **Node requirement**: >= 22
+- **Node requirement**: >= 24
 - **Exports**:
   - Main export (`.`): `index.js` - Node.js ESLint configuration
   - Browser export (`./browser`): `browser.js` - Browser/React ESLint configuration
@@ -118,7 +118,7 @@ When testing changes to this package in downstream projects, you'll typically:
 ### Migration Context
 This package is currently on v3, which uses ESLint 9's flat config format. The project has migrated from:
 - v1 → v2: See `docs/MIGRATION-V2.md`
-- v2 → v3: See `docs/MIGRATION-V3.md` (ESLint 9 flat config migration requiring Node.js 22+)
+- v2 → v3: See `docs/MIGRATION-V3.md` (ESLint 9 flat config migration requiring Node.js 24+)
 
 ## Important Notes
 
@@ -137,7 +137,7 @@ This package is currently on v3, which uses ESLint 9's flat config format. The p
 - Mixed module systems:
   - Main package is ESM (`index.js`, `browser.js`)
   - Utility scripts use CommonJS (`bin/add-prettier-scripts.js`, `cypress.config.cjs`)
-- CI runs on Node 22 and 24 (see `.github/workflows/pr.yml`)
+- CI runs on Node 24 (see `.github/workflows/pr.yml`)
 - No automated tests currently (`npm test` will fail with "Error: no test specified")
 - Detailed documentation available in `examples/`:
   - `browser-usage.md` - Browser/React ESLint configuration

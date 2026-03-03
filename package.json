@@ -26,7 +26,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "engines": {
-    "node": ">=22"
+    "node": ">=24"
   },
   "bin": {
     "add-prettier": "bin/add-prettier-scripts.js"
