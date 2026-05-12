@@ -1,6 +1,6 @@
 {
   "name": "@hs-web-team/eslint-config-node",
-  "version": "3.2.0",
+  "version": "3.3.0",
   "description": "HubSpot Marketing WebTeam shared configurations for ESLint, Prettier, Stylelint, and Cypress",
   "main": "index.js",
   "type": "module",
@@ -12,12 +12,19 @@
     "./cypress.config": {
       "types": "./cypress.config.d.ts",
       "require": "./cypress.config.cjs"
+    },
+    "./cypress": {
+      "types": "./cypress/index.d.ts",
+      "default": "./cypress/index.js"
     }
   },
   "typesVersions": {
     "*": {
       "cypress.config": [
         "./cypress.config.d.ts"
+      ],
+      "cypress": [
+        "./cypress/index.d.ts"
       ]
     }
   },
@@ -55,6 +62,9 @@
     "@eslint/js": "^9.39.1",
     "@typescript-eslint/eslint-plugin": "^8.46.3",
     "@typescript-eslint/parser": "^8.46.3",
+    "axe-core": "^4.11.3",
+    "cypress-axe": "^1.7.0",
+    "esbuild": "^0.27.2",
     "eslint": "^9.39.2",
     "eslint-formatter-checkstyle": "^9.0.1",
     "eslint-plugin-jsx-a11y": "^6.10.2",
@@ -62,10 +72,9 @@
     "eslint-plugin-react-hooks": "^7.0.1",
     "globals": "^17.3.0",
     "jiti": "^2.6.1",
+    "js-yaml": "^4.1.1",
     "prettier": "^3.8.1",
-    "typescript-eslint": "^8.54.0",
-    "esbuild": "^0.27.2",
-    "js-yaml": "^4.1.1"
+    "typescript-eslint": "^8.54.0"
   },
   "peerDependencies": {
     "@badeball/cypress-cucumber-preprocessor": "^24.0.0",

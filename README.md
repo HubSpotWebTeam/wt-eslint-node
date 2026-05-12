@@ -10,6 +10,7 @@ This package provides ESLint rules and configurations for **Hubspot Marketing We
 - [Browser/React Setup](#browserreact-setup)
 - [Stylelint Setup](#stylelint-setup)
 - [Cypress Setup](#cypress-setup)
+- [Accessibility Testing](#accessibility-testing-optional)
 - [Where to use it](#where-to-use-it)
 - [Using the Prettier Scripts](#using-the-prettier-scripts)
 <!-- index-end -->
@@ -123,6 +124,39 @@ This package provides shared Cypress configuration for E2E testing.
 
 For detailed Cypress configuration and migration documentation, see [examples/cypress-usage.md](./examples/cypress-usage.md).
 
+## Accessibility Testing (optional)
+
+This package includes a shared accessibility testing setup using [cypress-axe](https://github.com/component-driven/cypress-axe). Projects can opt in with a single import — no need to install `cypress-axe` or `axe-core` directly.
+
+1. Add to `cypress/support/e2e.ts`
+
+    ```ts
+    import '@hs-web-team/eslint-config-node/cypress';
+    ```
+
+    This registers `cy.injectAxe()`, `cy.checkA11y()`, and `cy.checkAccessibility()`.
+
+2. Call `cy.injectAxe()` in your project's navigation command, after the page visit e.g.
+
+    ```ts
+    // cypress/support/commands.ts
+    cy.visitPageIfUrlChanged(urlPath).then(() => {
+      cy.injectAxe();
+    });
+    ```
+
+3. Use `cy.checkAccessibility()` in your tests e.g.
+
+    ```ts
+    // Check the whole page
+    cy.checkAccessibility();
+
+    // Scope to a specific component
+    cy.checkAccessibility('.csol-accordion');
+    ```
+
+`cy.checkAccessibility()` adds the `high-contrast` class to `body`, runs WCAG 2.2 Level AA rules only, and logs each violation with its id, help text, impact, element targets, and help URL. TypeScript types are included — no `tsconfig.json` changes required.
+
 ## Where to use it
 
 This package provides multiple configurations:
@@ -131,6 +165,7 @@ This package provides multiple configurations:
 - **Browser configuration** (`/browser` export): For browser-based projects including React applications
 - **Stylelint configuration** (`.stylelintrc.json` export): For SCSS/CSS linting
 - **Cypress configuration** (`cypress.config` export): For E2E testing with Cypress
+- **Accessibility testing** (`/cypress` export): Opt-in cypress-axe setup with WCAG 2.2 AA checks
 - **Prettier configuration** (`.prettierrc.json` export): For code formatting
 
 Choose the appropriate configurations based on your project needs.
