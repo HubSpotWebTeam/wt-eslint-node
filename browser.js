@@ -13,6 +13,15 @@ const baseRules = {
   'no-plusplus': 0,
   'no-console': ['error', { allow: ['warn', 'error'] }],
   'no-confusing-arrow': 0,
+  'no-underscore-dangle': [
+    'error',
+    {
+      allow: [
+        '_hsg',
+        '_hsq',
+      ]
+    }
+  ],
   'no-trailing-spaces': ['error', { skipBlankLines: true }],
   'no-unused-expressions': ['warn', { allowTernary: true }],
   'max-len': [
