@@ -12,7 +12,13 @@
     ],
     "scss/dollar-variable-pattern": null,
     "scss/at-import-no-partial-leading-underscore": null,
-    "selector-class-pattern": null,
+    "selector-class-pattern": [
+      "^-?[a-z0-9]([a-z0-9]|-(?!-))*$",
+      {
+        "message": "Class names should only contain lowercase alphanumeric characters and hyphens, with no consecutive hyphens",
+        "severity": "warning"
+      }
+    ],
     "declaration-block-no-redundant-longhand-properties": null,
     "scss/at-import-partial-extension": null,
     "alpha-value-notation": null,
