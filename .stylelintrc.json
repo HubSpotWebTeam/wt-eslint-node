@@ -11,7 +11,13 @@
       }
     ],
     "scss/dollar-variable-pattern": null,
-    "selector-class-pattern": null,
+    "selector-class-pattern": [
+      "^-?[a-z0-9]([a-z0-9]|-(?!-))*$",
+      {
+        "message": "Class names should only contain lowercase alphanumeric characters and hyphens, with no consecutive hyphens",
+        "severity": "warning"
+      }
+    ],
     "declaration-block-no-redundant-longhand-properties": null,
     "alpha-value-notation": null,
     "scss/percent-placeholder-pattern": null,
