@@ -39,6 +39,13 @@
       {
         "camelCaseSvgKeywords": true
       }
+    ],
+    "selector-disallowed-list": [
+      ["/(?:^|[\\s>+~])\\s*\\.-[a-z]/i"],
+      {
+        "message": "Modifier classes (starting with '-') must not be standalone selectors; always combine with a base class (e.g., .prefix-element.-modifier or &.-modifier in nested rules)",
+        "severity": "error"
+      }
     ]
   }
 }
