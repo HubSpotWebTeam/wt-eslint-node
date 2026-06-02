@@ -7,7 +7,7 @@ import jsxA11yPlugin from 'eslint-plugin-jsx-a11y';
 
 // Base rules adapted from the browser config
 const baseRules = {
-  'comma-dangle': 'warn',
+  'comma-dangle': ['warn', 'always-multiline'],
   'no-param-reassign': ['warn', { props: false }],
   'arrow-parens': 0,
   'no-plusplus': 0,
@@ -19,8 +19,8 @@ const baseRules = {
       allow: [
         '_hsg',
         '_hsq',
-      ]
-    }
+      ],
+    },
   ],
   'no-trailing-spaces': ['error', { skipBlankLines: true }],
   'no-unused-expressions': ['warn', { allowTernary: true }],
@@ -29,15 +29,15 @@ const baseRules = {
     {
       code: 120,
       ignoreStrings: true,
-      ignoreTemplateLiterals: true
-    }
+      ignoreTemplateLiterals: true,
+    },
   ],
   'operator-linebreak': 0,
   'implicit-arrow-linebreak': 0,
   indent: 0,
   'object-curly-newline': 0,
   'function-paren-newline': 0,
-  'nonblock-statement-body-position': 0
+  'nonblock-statement-body-position': 0,
 };
 
 // React-specific rules
@@ -50,10 +50,10 @@ const reactRules = {
     2,
     {
       component: true,
-      html: false
-    }
+      html: false,
+    },
   ],
-  'react/forbid-prop-types': 0
+  'react/forbid-prop-types': 0,
 };
 
 // Common ignore patterns
@@ -63,13 +63,13 @@ const commonIgnores = [
   '**/build/**',
   '**/.next/**',
   '**/coverage/**',
-  'eslint.config.js'
+  'eslint.config.js',
 ];
 
 export default [
   // Global ignores
   {
-    ignores: commonIgnores
+    ignores: commonIgnores,
   },
   // Base config for all JavaScript files
   js.configs.recommended,
@@ -85,17 +85,17 @@ export default [
         // Custom browser globals from original config
         $: true,
         jQuery: true,
-        Invoca: true
+        Invoca: true,
       },
       parserOptions: {
         ecmaFeatures: {
-          jsx: true
-        }
-      }
+          jsx: true,
+        },
+      },
     },
     rules: {
-      ...baseRules
-    }
+      ...baseRules,
+    },
   },
   // React configuration
   {
@@ -103,24 +103,24 @@ export default [
     plugins: {
       react: reactPlugin,
       'react-hooks': reactHooksPlugin,
-      'jsx-a11y': jsxA11yPlugin
+      'jsx-a11y': jsxA11yPlugin,
     },
     settings: {
       react: {
-        version: 'detect'
-      }
+        version: 'detect',
+      },
     },
     rules: {
       ...reactPlugin.configs.recommended.rules,
       ...reactHooksPlugin.configs.recommended.rules,
       ...jsxA11yPlugin.configs.recommended.rules,
-      ...reactRules
-    }
+      ...reactRules,
+    },
   },
   // TypeScript config
   ...tseslint.configs.recommended.map(config => ({
     ...config,
-    files: ['**/*.{ts,mts,cts,tsx}']
+    files: ['**/*.{ts,mts,cts,tsx}'],
   })),
   {
     files: ['**/*.{ts,mts,cts,tsx}'],
@@ -133,17 +133,17 @@ export default [
         ...globals.jest,
         $: true,
         jQuery: true,
-        Invoca: true
+        Invoca: true,
       },
       parserOptions: {
         ecmaFeatures: {
-          jsx: true
-        }
-      }
+          jsx: true,
+        },
+      },
     },
     rules: {
-      ...baseRules
-    }
+      ...baseRules,
+    },
   },
   // React configuration for TypeScript files
   {
@@ -151,18 +151,18 @@ export default [
     plugins: {
       react: reactPlugin,
       'react-hooks': reactHooksPlugin,
-      'jsx-a11y': jsxA11yPlugin
+      'jsx-a11y': jsxA11yPlugin,
     },
     settings: {
       react: {
-        version: 'detect'
-      }
+        version: 'detect',
+      },
     },
     rules: {
       ...reactPlugin.configs.recommended.rules,
       ...reactHooksPlugin.configs.recommended.rules,
       ...jsxA11yPlugin.configs.recommended.rules,
-      ...reactRules
-    }
-  }
+      ...reactRules,
+    },
+  },
 ];
