@@ -1,6 +1,14 @@
 {
   "extends": "stylelint-config-standard-scss",
+  "plugins": ["stylelint-declaration-strict-value"],
   "rules": {
+    "scale-unlimited/declaration-strict-value": [
+      ["/color/", "fill", "stroke", "font-size", "font-weight"],
+      {
+        "ignoreValues": ["inherit", "initial", "unset", "revert", "currentColor", "transparent"],
+        "severity": "warning"
+      }
+    ],
     "length-zero-no-unit": null,
     "declaration-empty-line-before": null,
     "no-empty-source": null,

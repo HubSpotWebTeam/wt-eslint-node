@@ -84,7 +84,8 @@
     "cypress": "^15.16.0",
     "stylelint": "^17.1.1",
     "stylelint-config-standard": "^40.0.0",
-    "stylelint-config-standard-scss": "^17.0.0"
+    "stylelint-config-standard-scss": "^17.0.0",
+    "stylelint-declaration-strict-value": "^1.11.1"
   },
   "peerDependenciesMeta": {
     "stylelint": {
@@ -94,6 +95,9 @@
       "optional": true
     },
     "stylelint-config-standard-scss": {
+      "optional": true
+    },
+    "stylelint-declaration-strict-value": {
       "optional": true
     },
     "cypress": {
