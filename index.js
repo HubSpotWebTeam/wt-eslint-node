@@ -20,8 +20,8 @@ const baseRules = {
       allow: [
         '__dirname',
         '__filename',
-      ]
-    }
+      ],
+    },
   ],
   'no-confusing-arrow': 0,
   'import/no-unresolved': 0,
