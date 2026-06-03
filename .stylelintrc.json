@@ -5,7 +5,8 @@
     "scale-unlimited/declaration-strict-value": [
       ["/color/", "fill", "stroke", "font-size", "font-weight"],
       {
-        "ignoreValues": ["inherit", "initial", "unset", "revert", "currentColor", "transparent"],
+        "ignoreValues": ["inherit", "initial", "normal", "unset", "revert", "currentColor", "transparent"],
+        "message": "Expected a CSS custom property (var(--token)) or Sass variable ($var). For color opacity variants, use color-mix(in srgb, var(--token) 80%, transparent) instead of rgba().",
         "severity": "warning"
       }
     ],
