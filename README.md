@@ -13,6 +13,7 @@ This package provides ESLint rules and configurations for **Hubspot Marketing We
 - [Accessibility Testing](#accessibility-testing-optional)
 - [Where to use it](#where-to-use-it)
 - [Using the Prettier Scripts](#using-the-prettier-scripts)
+- [Contributing](#contributing)
 <!-- index-end -->
 
 ## Node.js Setup
@@ -199,3 +200,57 @@ See [MIGRATION-V2.md](./docs/MIGRATION-V2.md)
 ## Migration from v2 to v3
 
 See [MIGRATION-V3.md](./docs/MIGRATION-V3.md)
+
+## Contributing
+
+### Conventional Commits
+
+This repo uses [Conventional Commits](https://www.conventionalcommits.org) for all commit messages. A `commit-msg` git hook validates the format automatically — run `npm install` once to activate it.
+
+**Format:** `type(optional-scope): description`
+
+| Type | Use for | Version bump |
+|------|---------|-------------|
+| `feat` | New feature or config rule | Minor (`4.0.0` → `4.1.0`) |
+| `fix` | Bug fix or rule correction | Patch (`4.0.0` → `4.0.1`) |
+| `feat!` or `BREAKING CHANGE:` footer | Breaking API/config change | Major (`4.0.0` → `5.0.0`) |
+| `chore` | Dependency updates, tooling | No release |
+| `docs` | Documentation only | No release |
+| `refactor` | Internal restructuring | No release |
+| `ci` | CI/CD changes | No release |
+| `test` | Test changes | No release |
+
+**Examples:**
+
+```
+feat: add import/order rule to Node config
+fix: align browser comma-dangle with prettier defaults
+feat(browser): add React 19 peer dep support
+feat!: drop Node 18 support — requires Node 24+
+chore: bump typescript-eslint to v8.60
+docs: update Cypress usage examples
+```
+
+A breaking change can also be indicated by adding a `BREAKING CHANGE:` footer to any commit type:
+
+```
+feat: remove deprecated stylelint rules
+
+BREAKING CHANGE: Removed rules that were dropped in stylelint-scss@7.
+Projects relying on those rules must update their configs before upgrading.
+```
+
+### Release Process
+
+Releases are automated via [release-please](https://github.com/googleapis/release-please). No manual version bumping or GitHub release creation is needed.
+
+**How it works:**
+
+1. Merge PRs to `main` using conventional commit messages (see above).
+2. After each merge, release-please opens or updates a **Release PR** (titled `chore(main): release X.Y.Z`) that accumulates all unreleased changes, bumps `package.json`, and generates a `CHANGELOG.md` entry.
+3. When you are ready to publish, **merge the Release PR**.
+4. release-please creates a GitHub release and git tag automatically.
+5. The `release.yml` workflow fires on the new release and publishes to npm.
+
+**To release a prerelease (`-next.N`):**  
+Update the version in `package.json` manually on a branch (e.g. `4.1.0-next.0`) and create a GitHub release by hand — the existing `release.yml` workflow will publish it with the `next` tag on npm. Prereleases are not yet managed by release-please in this repo.

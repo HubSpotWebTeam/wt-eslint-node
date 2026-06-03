@@ -1,0 +1,28 @@
+#!/bin/sh
+
+commit_msg=$(head -1 "$1")
+
+# Skip merge and revert commits (auto-generated messages)
+case "$commit_msg" in
+  Merge\ *|Revert\ *) exit 0 ;;
+esac
+
+pattern="^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\([a-zA-Z0-9_/-]+\))?!?: .+"
+
+if ! echo "$commit_msg" | grep -qE "$pattern"; then
+  echo ""
+  echo "ERROR: Commit message does not follow Conventional Commits format."
+  echo ""
+  echo "  Expected:  type(optional-scope): description"
+  echo "  Types:     feat | fix | docs | style | refactor | test | chore | ci | perf | revert | build"
+  echo ""
+  echo "  Examples:"
+  echo "    feat: add new rule for import order"
+  echo "    fix: correct comma-dangle config for browser"
+  echo "    feat!: drop support for Node 18  (breaking change -> major bump)"
+  echo "    feat(browser): add React 19 support"
+  echo ""
+  echo "  See: https://www.conventionalcommits.org"
+  echo ""
+  exit 1
+fi
