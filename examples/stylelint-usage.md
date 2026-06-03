@@ -7,7 +7,7 @@ This package provides a shared Stylelint configuration for SCSS/CSS linting in H
 1. Install the package and stylelint dependencies:
 
 ```bash
-npm install --save-dev @hs-web-team/eslint-config-node stylelint stylelint-config-standard-scss
+npm install --save-dev @hs-web-team/eslint-config-node stylelint stylelint-config-standard-scss stylelint-declaration-strict-value
 ```
 
 ## Usage
@@ -136,7 +136,7 @@ To override rules for your project, add them to your `.stylelintrc.json`:
 If you get a module not found error, ensure you have installed all dependencies:
 
 ```bash
-npm install --save-dev stylelint stylelint-config-standard-scss
+npm install --save-dev stylelint stylelint-config-standard-scss stylelint-declaration-strict-value
 ```
 
 ### Conflicts with Prettier
