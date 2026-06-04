@@ -11,7 +11,13 @@
       }
     ],
     "scss/dollar-variable-pattern": null,
-    "selector-class-pattern": null,
+    "selector-class-pattern": [
+      "^-?[a-z0-9]([a-z0-9]|-(?!-))*$",
+      {
+        "message": "Class names should only contain lowercase alphanumeric characters and hyphens, with no consecutive hyphens",
+        "severity": "warning"
+      }
+    ],
     "declaration-block-no-redundant-longhand-properties": null,
     "alpha-value-notation": null,
     "scss/percent-placeholder-pattern": null,
@@ -32,6 +38,13 @@
       "lower",
       {
         "camelCaseSvgKeywords": true
+      }
+    ],
+    "selector-disallowed-list": [
+      ["/(?:^|[\\s>+~])\\s*\\.-[a-z]/i"],
+      {
+        "message": "Modifier classes (starting with '-') must not be standalone selectors; always combine with a base class (e.g., .prefix-element.-modifier or &.-modifier in nested rules)",
+        "severity": "error"
       }
     ]
   }
