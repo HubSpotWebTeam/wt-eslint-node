@@ -1,6 +1,6 @@
 {
   "name": "@hs-web-team/eslint-config-node",
-  "version": "4.0.2",
+  "version": "4.1.0",
   "description": "HubSpot Marketing WebTeam shared configurations for ESLint, Prettier, Stylelint, and Cypress",
   "main": "index.js",
   "type": "module",
