@@ -11,7 +11,8 @@
     "./.stylelintrc.json": "./.stylelintrc.json",
     "./cypress.config": {
       "types": "./cypress.config.d.ts",
-      "require": "./cypress.config.cjs"
+      "require": "./cypress.config.cjs",
+      "default": "./cypress.config.cjs"
     },
     "./cypress": {
       "types": "./cypress/index.d.ts",
