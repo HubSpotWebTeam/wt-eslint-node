@@ -1,5 +1,13 @@
 # Changelog
 
+## [4.2.2](https://github.com/HubSpotWebTeam/wt-eslint-node/compare/v4.2.1...v4.2.2) (2026-06-18)
+
+
+### Bug Fixes
+
+* add default export condition for cypress.config subpath ([a15f847](https://github.com/HubSpotWebTeam/wt-eslint-node/commit/a15f847cc00430dec3ec59cc5c4cccabcabee2a1))
+* add default export condition for cypress.config subpath ([41679a9](https://github.com/HubSpotWebTeam/wt-eslint-node/commit/41679a98cba0c514f8b66bd2495ec040c1a27775))
+
 ## [4.2.1](https://github.com/HubSpotWebTeam/wt-eslint-node/compare/v4.2.0...v4.2.1) (2026-06-05)
 
 
