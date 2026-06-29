@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.2.3](https://github.com/HubSpotWebTeam/wt-eslint-node/compare/v4.2.2...v4.2.3) (2026-06-29)
+
+
+### Bug Fixes
+
+* return null from getRootDir when hubspot.config.yml is not found ([#51](https://github.com/HubSpotWebTeam/wt-eslint-node/issues/51)) ([8ea3295](https://github.com/HubSpotWebTeam/wt-eslint-node/commit/8ea32956ee6fde0d99a6b4d8ad1db046514fd9f8))
+
 ## [4.2.2](https://github.com/HubSpotWebTeam/wt-eslint-node/compare/v4.2.1...v4.2.2) (2026-06-18)
 
 
