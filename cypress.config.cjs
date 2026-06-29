@@ -22,13 +22,13 @@ const envs = {
  * the directory where the hubspot.config.yml file is located.
  *
  * @param {string} currDir - the current working directory path to search from
- * @returns {string} The absolute path of the project's root directory
+ * @returns {string|null} The absolute path of the project's root directory, or null if not found
  */
 const getRootDir = currDir => {
   if (fs.existsSync(path.join(currDir, 'hubspot.config.yml'))) return currDir;
   const parentDir = path.dirname(currDir);
   if (parentDir === currDir) {
-    throw new Error('Error: Could not find the hubspot.config.yml file within the projects directories.');
+    return null;
   }
   return getRootDir(parentDir);
 };
@@ -44,6 +44,7 @@ const getDevBaseUrl = () => {
     );
 
     const root = getRootDir(__dirname);
+    if (!root) return null;
     const configPath = path.resolve(root, 'hubspot.config.yml');
     const config = fs.readFileSync(configPath, 'utf8');
     const { portals } = yaml.load(config);
