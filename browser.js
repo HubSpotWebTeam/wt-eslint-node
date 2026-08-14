@@ -38,6 +38,7 @@ const baseRules = {
   'object-curly-newline': 0,
   'function-paren-newline': 0,
   'nonblock-statement-body-position': 0,
+  'max-params': ['warn', { max: 3 }],
 };
 
 // React-specific rules
