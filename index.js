@@ -43,7 +43,6 @@ const baseRules = {
   'newline-per-chained-call': 0,
   indent: 0,
   'function-paren-newline': 0,
-  'max-params': ['warn', { max: 3 }],
 };
 
 // Common ignore patterns
