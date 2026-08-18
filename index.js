@@ -68,12 +68,7 @@ export default [
     },
     rules: baseRules,
   },
-  {
-    plugins: { 'hs-web-team': hsWebTeamPlugin },
-    rules: {
-      'hs-web-team/no-reduce-accumulator-copy': 'error',
-    },
-  },
+  hsWebTeamPlugin.configs.recommended,
   // TypeScript config - restrict to TypeScript files only
   ...tseslint.configs.recommended.map(config => ({
     ...config,
