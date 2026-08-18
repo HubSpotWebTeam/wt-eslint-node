@@ -1,6 +1,6 @@
 import { describe, it } from 'node:test';
 import { RuleTester } from 'eslint';
-import rule from '../../rules/no-reduce-accumulator-copy.js';
+import { noReduceAccumulatorCopy as rule } from '../../rules/no-reduce-accumulator-copy.js';
 
 const ruleTester = new RuleTester({
   languageOptions: {
@@ -14,8 +14,10 @@ describe('no-reduce-accumulator-copy', () => {
     it('does not flag spreading a non-accumulator variable inside reduce', () => {
       ruleTester.run('no-reduce-accumulator-copy', rule, {
         valid: [
-          // Spreading the current item, not the accumulator
+          // Spreading the current item (object), not the accumulator
           { code: 'items.reduce((acc, item) => ({ ...item, extra: 1 }), {})' },
+          // Spreading the current item (array), not the accumulator
+          { code: 'items.reduce((acc, item) => [...item], [])' },
         ],
         invalid: [],
       });
@@ -90,24 +92,24 @@ describe('no-reduce-accumulator-copy', () => {
       });
     });
 
+    it('flags array spread on the accumulator', () => {
+      ruleTester.run('no-reduce-accumulator-copy', rule, {
+        valid: [],
+        invalid: [
+          {
+            code: 'items.reduce((acc, item) => [...acc, item], [])',
+            errors: [{ messageId: 'AccumulatorSpread' }],
+          },
+        ],
+      });
+    });
+
     it('flags acc.concat() on the accumulator', () => {
       ruleTester.run('no-reduce-accumulator-copy', rule, {
         valid: [],
         invalid: [
           {
             code: 'items.reduce((acc, item) => acc.concat(item), [])',
-            errors: [{ messageId: 'AccumulatorShallowCopy' }],
-          },
-        ],
-      });
-    });
-
-    it('flags acc.slice() on the accumulator', () => {
-      ruleTester.run('no-reduce-accumulator-copy', rule, {
-        valid: [],
-        invalid: [
-          {
-            code: 'items.reduceRight((acc, item) => acc.slice(0, 5), [1, 2, 3, 4, 5, 6])',
             errors: [{ messageId: 'AccumulatorShallowCopy' }],
           },
         ],

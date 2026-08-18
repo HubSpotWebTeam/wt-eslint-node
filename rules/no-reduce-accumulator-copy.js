@@ -28,12 +28,12 @@ function isReduceAccumulator(def) {
   );
 }
 
-export default {
+export const noReduceAccumulatorCopy = {
   meta: {
     type: 'problem',
     docs: {
       description:
-        'Disallow O(n²) accumulator copies (spread, concat, slice) inside reduce/reduceRight callbacks',
+        'Disallow O(n²) accumulator copies (spread, concat) inside reduce/reduceRight callbacks',
       recommended: true,
     },
     messages: {
@@ -70,7 +70,7 @@ export default {
       }
 
       const method = node.callee.property.name;
-      if (method !== 'concat' && method !== 'slice') return;
+      if (method !== 'concat') return;
 
       const scope = sourceCode.getScope(node);
       const variable = scope.set.get(node.callee.object.name);

@@ -14,7 +14,7 @@ if (!projectRoot || projectRoot === path.resolve(__dirname, '..')) {
 const ownPkg = require('../package.json');
 
 const stylelintPeers = Object.entries(ownPkg.peerDependencies || {}).filter(([name]) =>
-  name.startsWith('stylelint')
+  name.startsWith('stylelint'),
 );
 
 // Extracts the minimum required major version from a semver range like ^17.0.0 or >=17.1.1.

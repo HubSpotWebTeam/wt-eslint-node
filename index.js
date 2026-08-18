@@ -1,13 +1,7 @@
 import js from '@eslint/js';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
-import noReduceAccumulatorCopy from './rules/no-reduce-accumulator-copy.js';
-
-const hsWebTeamPlugin = {
-  rules: {
-    'no-reduce-accumulator-copy': noReduceAccumulatorCopy,
-  },
-};
+import { hsWebTeamPlugin } from './plugins/hs-web-team.js';
 
 // Base rules for all JavaScript files
 const baseRules = {
@@ -58,7 +52,6 @@ const commonIgnores = [
   '**/.serverless/**',
   '**/.webpack/**',
   '**/dist/**',
-  'eslint.config.js',
 ];
 
 export default [

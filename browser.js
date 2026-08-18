@@ -4,13 +4,7 @@ import tseslint from 'typescript-eslint';
 import reactPlugin from 'eslint-plugin-react';
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
 import jsxA11yPlugin from 'eslint-plugin-jsx-a11y';
-import noReduceAccumulatorCopy from './rules/no-reduce-accumulator-copy.js';
-
-const hsWebTeamPlugin = {
-  rules: {
-    'no-reduce-accumulator-copy': noReduceAccumulatorCopy,
-  },
-};
+import { hsWebTeamPlugin } from './plugins/hs-web-team.js';
 
 // Base rules adapted from the browser config
 const baseRules = {
@@ -70,19 +64,12 @@ const commonIgnores = [
   '**/build/**',
   '**/.next/**',
   '**/coverage/**',
-  'eslint.config.js',
 ];
 
 export default [
   // Global ignores
   {
     ignores: commonIgnores,
-  },
-  {
-    plugins: { 'hs-web-team': hsWebTeamPlugin },
-    rules: {
-      'hs-web-team/no-reduce-accumulator-copy': 'error',
-    },
   },
   // Base config for all JavaScript files
   js.configs.recommended,
@@ -128,6 +115,12 @@ export default [
       ...reactHooksPlugin.configs.recommended.rules,
       ...jsxA11yPlugin.configs.recommended.rules,
       ...reactRules,
+    },
+  },
+  {
+    plugins: { 'hs-web-team': hsWebTeamPlugin },
+    rules: {
+      'hs-web-team/no-reduce-accumulator-copy': 'error',
     },
   },
   // TypeScript config
