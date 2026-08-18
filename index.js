@@ -1,6 +1,13 @@
 import js from '@eslint/js';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
+import noReduceAccumulatorCopy from './rules/no-reduce-accumulator-copy.js';
+
+const hsWebTeamPlugin = {
+  rules: {
+    'no-reduce-accumulator-copy': noReduceAccumulatorCopy,
+  },
+};
 
 // Base rules for all JavaScript files
 const baseRules = {
@@ -67,6 +74,12 @@ export default [
       globals: {...globals.node, ...globals.es2022, ...globals.jest},
     },
     rules: baseRules,
+  },
+  {
+    plugins: { 'hs-web-team': hsWebTeamPlugin },
+    rules: {
+      'hs-web-team/no-reduce-accumulator-copy': 'error',
+    },
   },
   // TypeScript config - restrict to TypeScript files only
   ...tseslint.configs.recommended.map(config => ({
