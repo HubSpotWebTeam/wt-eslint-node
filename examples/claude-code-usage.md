@@ -13,7 +13,7 @@ to stay useful.
 
 | Rule | Severity | Purpose |
 | --- | --- | --- |
-| `claude-md/max-lines` | `warn` | Flags a `CLAUDE.md` longer than the guideline (default **100** lines). |
+| `claude-code/max-lines` | `warn` | Flags a `CLAUDE.md` longer than the guideline (default **100** lines). |
 
 It is a **warning** — it never fails a lint run on its own. Bump it to `error`
 in your own config if you want CI to enforce it.
@@ -38,7 +38,7 @@ export default [
     files: ['**/CLAUDE.md'],
     rules: {
       // Raise the line limit for a large repo.
-      'claude-md/max-lines': ['warn', { max: 150 }],
+      'claude-code/max-lines': ['warn', { max: 150 }],
     },
   },
 ];
@@ -49,13 +49,13 @@ Turn it off entirely:
 ```js
 {
   files: ['**/CLAUDE.md'],
-  rules: { 'claude-md/max-lines': 'off' },
+  rules: { 'claude-code/max-lines': 'off' },
 }
 ```
 
 ## Rule options
 
-### `claude-md/max-lines`
+### `claude-code/max-lines`
 
 ```js
 ['warn', { max: 100 }] // default max is 100

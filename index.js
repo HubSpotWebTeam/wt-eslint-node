@@ -1,7 +1,7 @@
 import js from '@eslint/js';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
-import { claudeMdConfig } from './claude-md.config.js';
+import { claudeCodeConfig } from './claude-code.config.js';
 
 // Base rules for all JavaScript files
 const baseRules = {
@@ -82,6 +82,6 @@ export default [
     },
     rules: baseRules,
   },
-  // CLAUDE.md project-context checks (see claude-md.config.js)
-  claudeMdConfig,
+  // CLAUDE.md project-context checks (see claude-code.config.js)
+  claudeCodeConfig,
 ];

@@ -1,7 +1,7 @@
 import { describe, it } from 'node:test';
 import { RuleTester } from 'eslint';
 import markdown from '@eslint/markdown';
-import rule from '../../plugins/claude-md/rules/max-lines.js';
+import rule from '../../plugins/claude-code/rules/max-lines.js';
 
 // Report each RuleTester case as a real node:test subtest.
 RuleTester.describe = describe;
@@ -12,7 +12,7 @@ const ruleTester = new RuleTester({
   language: 'markdown/gfm',
 });
 
-ruleTester.run('claude-md/max-lines', rule, {
+ruleTester.run('claude-code/max-lines', rule, {
   valid: [
     // A file exactly at the limit passes (N lines, max N).
     { code: 'a\nb\nc\n', options: [{ max: 3 }] },

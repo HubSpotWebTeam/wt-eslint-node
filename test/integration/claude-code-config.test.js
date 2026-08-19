@@ -16,19 +16,19 @@ async function lintClaudeMd(configFile, code) {
 
 test('node config lints an oversized CLAUDE.md', async () => {
   const ruleIds = await lintClaudeMd(nodeConfig, oversized);
-  assert.ok(ruleIds.includes('claude-md/max-lines'), 'expected max-lines to fire');
+  assert.ok(ruleIds.includes('claude-code/max-lines'), 'expected max-lines to fire');
 });
 
 test('browser config lints an oversized CLAUDE.md', async () => {
   const ruleIds = await lintClaudeMd(browserConfig, oversized);
-  assert.ok(ruleIds.includes('claude-md/max-lines'), 'expected max-lines to fire');
+  assert.ok(ruleIds.includes('claude-code/max-lines'), 'expected max-lines to fire');
 });
 
-test('a healthy CLAUDE.md produces no claude-md warnings', async () => {
+test('a healthy CLAUDE.md produces no claude-code warnings', async () => {
   const healthy = '# my-project\n\nA specific description of what this repo does.\n';
   const ruleIds = await lintClaudeMd(nodeConfig, healthy);
   assert.ok(
-    !ruleIds.some(id => id?.startsWith('claude-md/')),
-    `expected no claude-md warnings, got: ${ruleIds.join(', ')}`,
+    !ruleIds.some(id => id?.startsWith('claude-code/')),
+    `expected no claude-code warnings, got: ${ruleIds.join(', ')}`,
   );
 });

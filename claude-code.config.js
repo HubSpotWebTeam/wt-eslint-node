@@ -1,5 +1,5 @@
 import markdown from '@eslint/markdown';
-import claudeMd from './plugins/claude-md/index.js';
+import claudeCode from './plugins/claude-code/index.js';
 
 // Flat-config block that lints `CLAUDE.md` project-context files. Spread into
 // both the Node (`index.js`) and browser (`browser.js`) configs so any repo
@@ -9,13 +9,13 @@ import claudeMd from './plugins/claude-md/index.js';
 //
 // `@eslint/markdown` supplies the `markdown/gfm` language — without it ESLint
 // would try to parse CLAUDE.md as JavaScript and error.
-export const claudeMdConfig = {
+export const claudeCodeConfig = {
   files: ['**/CLAUDE.md'],
   language: 'markdown/gfm',
-  plugins: { markdown, 'claude-md': claudeMd },
+  plugins: { markdown, 'claude-code': claudeCode },
   rules: {
-    'claude-md/max-lines': ['warn', { max: 100 }],
+    'claude-code/max-lines': ['warn', { max: 100 }],
   },
 };
 
-export default claudeMdConfig;
+export default claudeCodeConfig;

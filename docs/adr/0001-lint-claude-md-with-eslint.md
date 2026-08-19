@@ -27,22 +27,22 @@ should be marked superseded and its `CLAUDE.md` check removed.
 
 ## Decision
 
-Add a first-party ESLint plugin, `claude-md`, to this package and wire it
+Add a first-party ESLint plugin, `claude-code`, to this package and wire it
 **always-on** into both shared configs (`index.js` for Node, `browser.js` for
 browser/React). The plugin ships one rule:
 
-- **`claude-md/max-lines`** — warns when `CLAUDE.md` exceeds a maximum number of
-  lines. Default `max` is **100**; a trailing newline does not count as a
+- **`claude-code/max-lines`** — warns when `CLAUDE.md` exceeds a maximum number
+  of lines. Default `max` is **100**; a trailing newline does not count as a
   content line. It reports at the first line past the limit.
 
-Wiring (see `claude-md.config.js`):
+Wiring (see `claude-code.config.js`):
 
 ```js
 {
   files: ['**/CLAUDE.md'],
   language: 'markdown/gfm',
-  plugins: { markdown, 'claude-md': claudeMd },
-  rules: { 'claude-md/max-lines': ['warn', { max: 100 }] },
+  plugins: { markdown, 'claude-code': claudeCode },
+  rules: { 'claude-code/max-lines': ['warn', { max: 100 }] },
 }
 ```
 
@@ -119,5 +119,5 @@ justify an opt-in export that most projects would have to remember to add.
   needs appear (e.g. flagging deprecated constructs). Each should stay warn-only
   and overridable.
 - **Shared, reusable config export.** If more `CLAUDE.md` rules land, consider
-  exposing them as a named `claude-md` config object so projects can opt into or
+  exposing them as a named `claude-code` config object so projects can opt into or
   out of the whole group in one place.
