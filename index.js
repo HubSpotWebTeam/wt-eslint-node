@@ -1,7 +1,7 @@
 import js from '@eslint/js';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
-import { hsWebTeamPlugin } from './plugins/hs-web-team.js';
+import { hsWebTeamPlugin } from './plugins/hs-web-team/index.js';
 
 // Base rules for all JavaScript files
 const baseRules = {

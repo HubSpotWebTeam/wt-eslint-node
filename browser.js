@@ -4,7 +4,7 @@ import tseslint from 'typescript-eslint';
 import reactPlugin from 'eslint-plugin-react';
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
 import jsxA11yPlugin from 'eslint-plugin-jsx-a11y';
-import { hsWebTeamPlugin } from './plugins/hs-web-team.js';
+import { hsWebTeamPlugin } from './plugins/hs-web-team/index.js';
 
 // Base rules adapted from the browser config
 const baseRules = {

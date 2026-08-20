@@ -1,4 +1,4 @@
-import { noReduceAccumulatorCopy } from '../rules/no-reduce-accumulator-copy.js';
+import { noReduceAccumulatorCopy } from './rules/no-reduce-accumulator-copy.js';
 
 export const hsWebTeamPlugin = {
   rules: {

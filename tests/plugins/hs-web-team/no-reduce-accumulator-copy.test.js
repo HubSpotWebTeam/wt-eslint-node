@@ -1,6 +1,6 @@
 import { describe, it } from 'node:test';
 import { RuleTester } from 'eslint';
-import { noReduceAccumulatorCopy as rule } from '../../rules/no-reduce-accumulator-copy.js';
+import { noReduceAccumulatorCopy as rule } from '../../../plugins/hs-web-team/rules/no-reduce-accumulator-copy.js';
 
 const ruleTester = new RuleTester({
   languageOptions: {
