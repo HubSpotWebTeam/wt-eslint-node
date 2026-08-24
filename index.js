@@ -1,6 +1,7 @@
 import js from '@eslint/js';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
+import { hsWebTeamPlugin } from './plugins/hs-web-team/index.js';
 
 // Base rules for all JavaScript files
 const baseRules = {
@@ -52,7 +53,6 @@ const commonIgnores = [
   '**/.serverless/**',
   '**/.webpack/**',
   '**/dist/**',
-  'eslint.config.js',
 ];
 
 export default [
@@ -69,6 +69,7 @@ export default [
     },
     rules: baseRules,
   },
+  hsWebTeamPlugin.configs.recommended,
   // TypeScript config - restrict to TypeScript files only
   ...tseslint.configs.recommended.map(config => ({
     ...config,

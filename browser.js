@@ -4,6 +4,7 @@ import tseslint from 'typescript-eslint';
 import reactPlugin from 'eslint-plugin-react';
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
 import jsxA11yPlugin from 'eslint-plugin-jsx-a11y';
+import { hsWebTeamPlugin } from './plugins/hs-web-team/index.js';
 
 // Base rules adapted from the browser config
 const baseRules = {
@@ -64,7 +65,6 @@ const commonIgnores = [
   '**/build/**',
   '**/.next/**',
   '**/coverage/**',
-  'eslint.config.js',
 ];
 
 export default [
@@ -118,6 +118,7 @@ export default [
       ...reactRules,
     },
   },
+  hsWebTeamPlugin.configs.recommended,
   // TypeScript config
   ...tseslint.configs.recommended.map(config => ({
     ...config,
