@@ -11,6 +11,7 @@ This package provides ESLint rules and configurations for **Hubspot Marketing We
 - [Stylelint Setup](#stylelint-setup)
 - [Cypress Setup](#cypress-setup)
 - [Accessibility Testing](#accessibility-testing-optional)
+- [Custom Rules](#custom-rules)
 - [Where to use it](#where-to-use-it)
 - [Using the Prettier Scripts](#using-the-prettier-scripts)
 - [Contributing](#contributing)
@@ -157,6 +158,16 @@ This package includes a shared accessibility testing setup using [cypress-axe](h
     ```
 
 `cy.checkAccessibility()` adds the `high-contrast` class to `body`, runs WCAG 2.2 Level AA rules only, and logs each violation with its id, help text, impact, element targets, and help URL. TypeScript types are included — no `tsconfig.json` changes required.
+
+## Custom Rules
+
+This package ships a `hs-web-team` ESLint plugin with custom rules that are active automatically when you use `wtConfig` or `wtBrowserConfig` — no extra setup needed.
+
+| Rule | Severity | Summary |
+|------|----------|---------|
+| `hs-web-team/no-reduce-accumulator-copy` | error | Disallows O(n²) accumulator copies (spread, concat) inside `reduce`/`reduceRight` |
+
+For examples and remediation guidance, see [examples/custom-rules.md](./examples/custom-rules.md).
 
 ## Where to use it
 

@@ -2,6 +2,19 @@
   "name": "@hs-web-team/eslint-config-node",
   "version": "4.3.0-next.2",
   "description": "HubSpot Marketing WebTeam shared configurations for ESLint, Prettier, Stylelint, and Cypress",
+  "files": [
+    ".prettierrc.json",
+    ".stylelintrc.json",
+    "bin/",
+    "browser.js",
+    "cypress.config.cjs",
+    "cypress.config.d.ts",
+    "cypress/",
+    "docs/",
+    "examples/",
+    "index.js",
+    "plugins/"
+  ],
   "main": "index.js",
   "type": "module",
   "exports": {
@@ -31,7 +44,7 @@
   },
   "scripts": {
     "postinstall": "node bin/check-peer-deps.cjs",
-    "lint": "npx eslint -c ./index.js *.js --fix",
+    "lint": "npx eslint . --fix",
     "test": "node --test",
     "prepare": "git rev-parse --git-dir > /dev/null 2>&1 && git config core.hooksPath .githooks || true"
   },

@@ -5,6 +5,7 @@ import reactPlugin from 'eslint-plugin-react';
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
 import jsxA11yPlugin from 'eslint-plugin-jsx-a11y';
 import { claudeCodeConfig } from './claude-code.config.js';
+import { hsWebTeamPlugin } from './plugins/hs-web-team/index.js';
 
 // Base rules adapted from the browser config
 const baseRules = {
@@ -39,6 +40,7 @@ const baseRules = {
   'object-curly-newline': 0,
   'function-paren-newline': 0,
   'nonblock-statement-body-position': 0,
+  'max-params': ['warn', { max: 3 }],
 };
 
 // React-specific rules
@@ -64,7 +66,6 @@ const commonIgnores = [
   '**/build/**',
   '**/.next/**',
   '**/coverage/**',
-  'eslint.config.js',
 ];
 
 export default [
@@ -119,6 +120,7 @@ export default [
       ...reactRules,
     },
   },
+  hsWebTeamPlugin.configs.recommended,
   // TypeScript config
   ...tseslint.configs.recommended.map(config => ({
     ...config,

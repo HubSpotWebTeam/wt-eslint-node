@@ -2,6 +2,7 @@ import js from '@eslint/js';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 import { claudeCodeConfig } from './claude-code.config.js';
+import { hsWebTeamPlugin } from './plugins/hs-web-team/index.js';
 
 // Base rules for all JavaScript files
 const baseRules = {
@@ -44,6 +45,7 @@ const baseRules = {
   'newline-per-chained-call': 0,
   indent: 0,
   'function-paren-newline': 0,
+  'max-params': ['warn', { max: 3 }],
 };
 
 // Common ignore patterns
@@ -52,7 +54,6 @@ const commonIgnores = [
   '**/.serverless/**',
   '**/.webpack/**',
   '**/dist/**',
-  'eslint.config.js',
 ];
 
 export default [
@@ -70,6 +71,7 @@ export default [
     },
     rules: baseRules,
   },
+  hsWebTeamPlugin.configs.recommended,
   // TypeScript config - restrict to TypeScript files only
   ...tseslint.configs.recommended.map(config => ({
     ...config,
