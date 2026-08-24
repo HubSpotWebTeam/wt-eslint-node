@@ -1,7 +1,9 @@
+import { noAbbreviations } from './rules/no-abbreviations.js';
 import { noReduceAccumulatorCopy } from './rules/no-reduce-accumulator-copy.js';
 
 export const hsWebTeamPlugin = {
   rules: {
+    'no-abbreviations': noAbbreviations,
     'no-reduce-accumulator-copy': noReduceAccumulatorCopy,
   },
 };
