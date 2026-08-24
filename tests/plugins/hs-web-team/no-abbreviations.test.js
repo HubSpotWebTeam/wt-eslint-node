@@ -83,6 +83,17 @@ describe('no-abbreviations', () => {
       });
     });
 
+    it('does not flag object destructuring shorthand (external property name may not be developer-owned)', () => {
+      ruleTester.run('no-abbreviations', rule, {
+        valid: [
+          { code: 'const { w } = response;' },
+          { code: 'const { w: warning } = response;' },
+          { code: 'function process({ w }) {}' },
+        ],
+        invalid: [],
+      });
+    });
+
     it('does not flag names covered by the custom exceptions option', () => {
       ruleTester.run('no-abbreviations', rule, {
         valid: [
@@ -94,6 +105,34 @@ describe('no-abbreviations', () => {
   });
 
   describe('invalid', () => {
+    it('flags a single-char array destructuring binding', () => {
+      ruleTester.run('no-abbreviations', rule, {
+        valid: [],
+        invalid: [
+          {
+            code: 'const [w] = items;',
+            errors: [{ messageId: 'tooShort' }],
+          },
+          {
+            code: 'const [item, w] = items;',
+            errors: [{ messageId: 'tooShort' }],
+          },
+        ],
+      });
+    });
+
+    it('flags a single-char function declaration name', () => {
+      ruleTester.run('no-abbreviations', rule, {
+        valid: [],
+        invalid: [
+          {
+            code: 'function w() {}',
+            errors: [{ messageId: 'tooShort' }],
+          },
+        ],
+      });
+    });
+
     it('flags a single-char variable declaration', () => {
       ruleTester.run('no-abbreviations', rule, {
         valid: [],

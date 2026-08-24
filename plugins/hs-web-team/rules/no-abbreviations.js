@@ -13,8 +13,9 @@ const ARRAY_ITERATION_METHODS = new Set([
   'findLastIndex',
   'some',
   'every',
-  'reduce',
-  'reduceRight',
+  // reduce/reduceRight are intentionally excluded: their callback signature is
+  // (accumulator, currentValue, currentIndex, …), so position 1 is the current
+  // *value*, not the index. The i-at-position-1 heuristic does not apply.
 ]);
 
 /**
@@ -60,7 +61,7 @@ export const noAbbreviations = {
     docs: {
       description: 'Disallow abbreviated identifier names (e.g. `w` instead of `warnings`)',
       url: 'https://docs.hubwt.com/docs/developers/coding-on-the-web-team/coding-standards/javascript-standards/#avoid-abbreviation',
-      recommended: false,
+      recommended: true,
     },
     messages: {
       tooShort:
@@ -91,8 +92,16 @@ export const noAbbreviations = {
         if (exceptions.has(name)) return;
 
         // Only flag declaration sites — not usage sites.
+        //
+        // Object destructuring shorthand (const { w } = response) is intentionally
+        // excluded: `w` may be an external API property name the developer doesn't
+        // control. The idiomatic fix — const { w: warning } = response — is correct
+        // but non-obvious enough to leave as opt-in. Array destructuring IS included
+        // because the element binding name is always chosen by the developer.
         const isDeclaration =
           (parent.type === 'VariableDeclarator' && parent.id === node) ||
+          (parent.type === 'ArrayPattern' && parent.elements.includes(node)) ||
+          (parent.type === 'FunctionDeclaration' && parent.id === node) ||
           (parent.type === 'FunctionDeclaration' && parent.params.includes(node)) ||
           (parent.type === 'ArrowFunctionExpression' && parent.params.includes(node)) ||
           (parent.type === 'FunctionExpression' && parent.params.includes(node));

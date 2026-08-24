@@ -14,6 +14,7 @@ hsWebTeamPlugin.configs = {
   recommended: {
     plugins: { 'hs-web-team': hsWebTeamPlugin },
     rules: {
+      'hs-web-team/no-abbreviations': 'warn',
       'hs-web-team/no-reduce-accumulator-copy': 'error',
     },
   },
