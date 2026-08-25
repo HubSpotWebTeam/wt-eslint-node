@@ -35,7 +35,7 @@ browser/React). The plugin ships one rule:
   of lines. Default `max` is **100**; a trailing newline does not count as a
   content line. It reports at the first line past the limit.
 
-Wiring (see `claude-code.config.js`):
+Wiring (see `plugins/claude-code/index.js`, exposed as `configs.recommended`):
 
 ```js
 {
