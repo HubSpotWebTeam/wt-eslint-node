@@ -4,7 +4,7 @@ import tseslint from 'typescript-eslint';
 import reactPlugin from 'eslint-plugin-react';
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
 import jsxA11yPlugin from 'eslint-plugin-jsx-a11y';
-import { claudeCodeConfig } from './claude-code.config.js';
+import { claudeCodePlugin } from './plugins/claude-code/index.js';
 import { hsWebTeamPlugin } from './plugins/hs-web-team/index.js';
 
 // Base rules adapted from the browser config
@@ -169,6 +169,6 @@ export default [
       ...reactRules,
     },
   },
-  // CLAUDE.md project-context checks (see claude-code.config.js)
-  claudeCodeConfig,
+  // CLAUDE.md and SKILL.md context-file checks (see plugins/claude-code)
+  ...claudeCodePlugin.configs.recommended,
 ];

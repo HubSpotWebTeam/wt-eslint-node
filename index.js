@@ -1,7 +1,7 @@
 import js from '@eslint/js';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
-import { claudeCodeConfig } from './claude-code.config.js';
+import { claudeCodePlugin } from './plugins/claude-code/index.js';
 import { hsWebTeamPlugin } from './plugins/hs-web-team/index.js';
 
 // Base rules for all JavaScript files
@@ -84,6 +84,6 @@ export default [
     },
     rules: baseRules,
   },
-  // CLAUDE.md project-context checks (see claude-code.config.js)
-  claudeCodeConfig,
+  // CLAUDE.md and SKILL.md context-file checks (see plugins/claude-code)
+  ...claudeCodePlugin.configs.recommended,
 ];
