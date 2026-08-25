@@ -1,27 +1,33 @@
 const DEFAULT_MAX = 100;
+const DEFAULT_ADVICE = 'Trim it or split sections into files Claude Code can import on demand.';
 
 export default {
   meta: {
     type: 'suggestion',
     docs: {
-      description: 'Warn when CLAUDE.md exceeds a maximum number of lines',
+      description: 'Warn when a doc file exceeds a maximum number of lines',
       recommended: true,
     },
     schema: [
       {
         type: 'object',
-        properties: { max: { type: 'integer', minimum: 1 } },
+        properties: {
+          max: { type: 'integer', minimum: 1 },
+          advice: { type: 'string' },
+        },
         additionalProperties: false,
       },
     ],
     messages: {
-      tooManyLines:
-        'CLAUDE.md has {{count}} lines, over the {{max}}-line guideline. Trim it or split sections into files Claude Code can import on demand.',
+      tooManyLines: '{{file}} has {{count}} lines, over the {{max}}-line guideline. {{advice}}',
     },
   },
   create(context) {
-    const { max = DEFAULT_MAX } = context.options[0] || {};
+    const { max = DEFAULT_MAX, advice = DEFAULT_ADVICE } = context.options[0] || {};
     const { sourceCode } = context;
+    // Report against the file's basename so the message names the offending
+    // file (e.g. CLAUDE.md or SKILL.md) regardless of its directory.
+    const file = (context.filename || '').split('/').pop() || 'File';
 
     return {
       root() {
@@ -37,7 +43,7 @@ export default {
               end: { line: lines.length, column: lines[lines.length - 1].length },
             },
             messageId: 'tooManyLines',
-            data: { count, max },
+            data: { file, count, max, advice },
           });
         }
       },

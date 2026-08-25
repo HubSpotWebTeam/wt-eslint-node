@@ -36,5 +36,31 @@ ruleTester.run('claude-code/max-lines', rule, {
       options: [{ max: 3 }],
       errors: [{ messageId: 'tooManyLines', line: 4 }],
     },
+    {
+      // The message interpolates the file's basename and default advice.
+      code: 'a\nb\nc\nd\n',
+      options: [{ max: 3 }],
+      filename: 'CLAUDE.md',
+      errors: [
+        {
+          message:
+            'CLAUDE.md has 4 lines, over the 3-line guideline. ' +
+            'Trim it or split sections into files Claude Code can import on demand.',
+        },
+      ],
+    },
+    {
+      // A custom `advice` string overrides the default in the message.
+      code: 'a\nb\nc\nd\n',
+      options: [{ max: 3, advice: 'Move detail into reference files the skill loads on demand.' }],
+      filename: 'some/path/.claude/skills/foo/SKILL.md',
+      errors: [
+        {
+          message:
+            'SKILL.md has 4 lines, over the 3-line guideline. ' +
+            'Move detail into reference files the skill loads on demand.',
+        },
+      ],
+    },
   ],
 });
