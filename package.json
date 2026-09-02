@@ -30,7 +30,8 @@
     "./cypress": {
       "types": "./cypress/index.d.ts",
       "default": "./cypress/index.js"
-    }
+    },
+    "./plugin": "./plugins/hs-web-team/index.js"
   },
   "typesVersions": {
     "*": {

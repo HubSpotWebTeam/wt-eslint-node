@@ -120,6 +120,13 @@ This package is currently on v3, which uses ESLint 9's flat config format. The p
 - v1 → v2: See `docs/MIGRATION-V2.md`
 - v2 → v3: See `docs/MIGRATION-V3.md` (ESLint 9 flat config migration requiring Node.js 24+)
 
+## Versioning Convention
+
+When adding rules to `configs.recommended` in the `hs-web-team` plugin (or any other bundled config):
+
+- **`'warn'` severity** → minor bump (`feat:` commit). Warn-only rules don't fail standard CI, so consumers aren't broken without opt-in (`--max-warnings 0`).
+- **`'error'` severity** → breaking change (`feat!:` commit, major bump). Error rules can fail CI for any consumer with a violation, regardless of their settings.
+
 ## Important Notes
 
 - This package supports multiple use cases:
