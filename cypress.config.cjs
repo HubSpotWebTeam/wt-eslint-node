@@ -39,10 +39,6 @@ const getRootDir = currDir => {
  */
 const getDevBaseUrl = () => {
   try {
-    global.console.log(
-      'To test a dev URL, add the `baseUrl` property to your `DEV` portal configuration in `hubspot.config.yml`',
-    );
-
     const root = getRootDir(__dirname);
     if (!root) return null;
     const configPath = path.resolve(root, 'hubspot.config.yml');
@@ -50,9 +46,14 @@ const getDevBaseUrl = () => {
     const { portals } = yaml.load(config);
     const devPortal = portals.find(portal => portal.name === 'DEV');
     const devBaseUrl = devPortal.baseUrl;
+    if (!devBaseUrl) {
+      global.console.log(
+        'To test a dev URL, add the `baseUrl` property to your `DEV` portal configuration in `hubspot.config.yml`',
+      );
+    }
     return devBaseUrl || null;
   } catch (error) {
-    global.console.error(error);
+    global.console.log('Could not read DEV baseUrl from hubspot.config.yml:', error.message);
     return null;
   }
 };
@@ -91,10 +92,7 @@ async function setupNodeEvents(on, config) {
   await addCucumberPreprocessorPlugin(on, config);
 
   // Use esbuild for fast TypeScript and feature file processing
-  on(
-    'file:preprocessor',
-    createBundler({ plugins: [createEsbuildPlugin(config)] }),
-  );
+  on('file:preprocessor', createBundler({ plugins: [createEsbuildPlugin(config)] }));
 
   return config;
 }
