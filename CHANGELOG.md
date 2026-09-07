@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.1.0](https://github.com/HubSpotWebTeam/wt-eslint-node/compare/v5.0.0...v5.1.0) (2026-09-07)
+
+
+### Features
+
+* add __ip_lookup and _hsp to browser no-underscore-dangle allowlist ([#69](https://github.com/HubSpotWebTeam/wt-eslint-node/issues/69)) ([1ac4cba](https://github.com/HubSpotWebTeam/wt-eslint-node/commit/1ac4cbab3e6c2c3e005f60be765787f4194ac7ee))
+
 ## [5.0.0](https://github.com/HubSpotWebTeam/wt-eslint-node/compare/v4.2.2...v5.0.0) (2026-09-02)
 
 
