@@ -7,6 +7,17 @@ import jsxA11yPlugin from 'eslint-plugin-jsx-a11y';
 import { claudeCodePlugin } from './plugins/claude-code/index.js';
 import { hsWebTeamPlugin } from './plugins/hs-web-team/index.js';
 
+// Underscore-prefixed HubSpot platform globals (e.g. window._hsq, window._hsg.__ip_lookup).
+// Exported so consuming projects can extend this list with their own no-underscore-dangle
+// allowances without duplicating the shared entries, e.g.:
+//   allow: [...underscoreDangleAllowlist, 'myProjectGlobal']
+export const underscoreDangleAllowlist = [
+  '_hsg',
+  '_hsp',
+  '_hsq',
+  '__ip_lookup',
+];
+
 // Base rules adapted from the browser config
 const baseRules = {
   'comma-dangle': ['warn', 'always-multiline'],
@@ -18,10 +29,7 @@ const baseRules = {
   'no-underscore-dangle': [
     'error',
     {
-      allow: [
-        '_hsg',
-        '_hsq',
-      ],
+      allow: underscoreDangleAllowlist,
     },
   ],
   'no-trailing-spaces': ['error', { skipBlankLines: true }],

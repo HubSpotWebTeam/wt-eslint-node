@@ -57,6 +57,26 @@ If you're migrating from `@hs-web-team/eslint-config-browser` (ESLint 8):
 3. Ensure you're using Node.js >= 22
 4. Review and adapt any custom rules in your project
 
+## Extending the underscore-dangle allowlist
+
+`no-underscore-dangle` allows a fixed set of HubSpot platform globals (`_hsg`, `_hsp`, `_hsq`, `__ip_lookup`). If your project reads an additional underscore-prefixed global, extend the shared list instead of overriding the rule entirely:
+
+```javascript
+import wtBrowserConfig, { underscoreDangleAllowlist } from '@hs-web-team/eslint-config-node/browser';
+
+export default [
+  ...wtBrowserConfig,
+  {
+    rules: {
+      'no-underscore-dangle': [
+        'error',
+        { allow: [...underscoreDangleAllowlist, 'myProjectGlobal'] },
+      ],
+    },
+  },
+];
+```
+
 ## File Patterns
 
 The configuration applies to:
