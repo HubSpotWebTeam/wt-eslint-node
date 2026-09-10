@@ -12,6 +12,7 @@
     "cypress/",
     "docs/",
     "examples/",
+    "gherkin/",
     "index.js",
     "plugins/"
   ],
@@ -31,7 +32,9 @@
       "types": "./cypress/index.d.ts",
       "default": "./cypress/index.js"
     },
-    "./plugin": "./plugins/hs-web-team/index.js"
+    "./plugin": "./plugins/hs-web-team/index.js",
+    "./gherkin/gplint-config": "./gherkin/gplint-config.js",
+    "./gherkin/coverage-config": "./gherkin/coverage-config.js"
   },
   "typesVersions": {
     "*": {
@@ -53,7 +56,9 @@
     "node": ">=24"
   },
   "bin": {
-    "add-prettier": "bin/add-prettier-scripts.js"
+    "add-prettier": "bin/add-prettier-scripts.js",
+    "gherkin-tag-lint": "bin/gherkin-tag-lint.js",
+    "gherkin-tag-coverage": "bin/gherkin-tag-coverage.js"
   },
   "repository": {
     "type": "git",
@@ -75,6 +80,8 @@
   "homepage": "https://github.com/HubSpotWebTeam/wt-eslint-node#readme",
   "dependencies": {
     "@bahmutov/cypress-esbuild-preprocessor": "2.2.8",
+    "@cucumber/gherkin": "38.0.0",
+    "@cucumber/messages": "32.3.1",
     "@eslint/eslintrc": "3.3.6",
     "@eslint/js": "^9.39.1",
     "@eslint/markdown": "8.0.3",
@@ -89,10 +96,12 @@
     "eslint-plugin-react": "7.37.5",
     "eslint-plugin-react-hooks": "7.1.1",
     "globals": "17.11.0",
+    "gplint": "2.6.0",
     "jiti": "2.7.0",
     "js-yaml": "5.4.0",
     "prettier": "3.9.6",
     "prettier-plugin-gherkin": "4.0.0",
+    "strip-json-comments": "5.0.3",
     "typescript-eslint": "8.68.0"
   },
   "peerDependencies": {
