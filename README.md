@@ -10,6 +10,7 @@ This package provides ESLint rules and configurations for **Hubspot Marketing We
 - [Browser/React Setup](#browserreact-setup)
 - [Stylelint Setup](#stylelint-setup)
 - [Cypress Setup](#cypress-setup)
+- [Gherkin Tag Linting Setup](#gherkin-tag-linting-setup)
 - [Accessibility Testing](#accessibility-testing-optional)
 - [Custom Rules](#custom-rules)
 - [Where to use it](#where-to-use-it)
@@ -125,6 +126,26 @@ This package provides shared Cypress configuration for E2E testing.
     ```
 
 For detailed Cypress configuration and migration documentation, see [examples/cypress-usage.md](./examples/cypress-usage.md).
+
+## Gherkin Tag Linting Setup
+
+Cucumber selects tests by tag, so an untagged scenario is silently skipped and a green suite can hide tests that never ran. This package ships two checks that make that a build failure.
+
+This applies only to repositories whose Cypress suite is written in Gherkin `.feature` files. A Cypress suite written in Mocha has no tags to check. Neither check is part of `wtConfig`, `wtBrowserConfig`, or the Cypress config, so existing consumers are unaffected until they opt in with the script below.
+
+1. Add one script to `package.json`
+
+    ```json
+    {
+      "scripts": {
+        "lint:gherkin": "gplint cypress/e2e --config=node_modules/@hs-web-team/eslint-config-node/gherkin/.gplintrc && gherkin-tag-coverage"
+      }
+    }
+    ```
+
+`gplint` is bundled, so there is nothing extra to install. Repositories with no production environment opt out of the prod requirement with a `gherkin-coverage.json` file.
+
+For the full rule list, QA-only setup and troubleshooting, see [examples/gherkin-usage.md](./examples/gherkin-usage.md).
 
 ## Accessibility Testing (optional)
 

@@ -33,7 +33,7 @@
       "default": "./cypress/index.js"
     },
     "./plugin": "./plugins/hs-web-team/index.js",
-    "./gherkin/gplint-config": "./gherkin/gplint-config.js",
+    "./gherkin/.gplintrc": "./gherkin/.gplintrc",
     "./gherkin/coverage-config": "./gherkin/coverage-config.js"
   },
   "typesVersions": {
@@ -57,7 +57,6 @@
   },
   "bin": {
     "add-prettier": "bin/add-prettier-scripts.js",
-    "gherkin-tag-lint": "bin/gherkin-tag-lint.js",
     "gherkin-tag-coverage": "bin/gherkin-tag-coverage.js"
   },
   "repository": {
