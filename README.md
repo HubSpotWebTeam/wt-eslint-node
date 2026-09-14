@@ -165,6 +165,7 @@ This package ships a `hs-web-team` ESLint plugin with custom rules that are acti
 
 | Rule | Severity | Summary |
 |------|----------|---------|
+| `hs-web-team/no-window-declaration-conflict` | warn | Disallows `declare global` augmentation of shared, multi-consumer `Window` properties (`_hsg`, `_hsq`, `_hsp`, `dataLayer`, `hbspt` by default) |
 | `hs-web-team/no-reduce-accumulator-copy` | error | Disallows O(n²) accumulator copies (spread, concat) inside `reduce`/`reduceRight` |
 
 For examples and remediation guidance, see [examples/custom-rules.md](./examples/custom-rules.md).
