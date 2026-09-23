@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>wt-eslint-node Playground</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: light-dark(#fff, #0d1117);
+    --bg2: light-dark(#f6f8fa, #161b22);
+    --border: light-dark(#d1d9e0, #30363d);
+    --text: light-dark(#1f2328, #e6edf3);
+    --muted: light-dark(#636c76, #8b949e);
+    --error: light-dark(#cf222e, #f85149);
+    --warn: light-dark(#9a6700, #e3b341);
+    --accent: light-dark(#0969da, #58a6ff);
+    --green: light-dark(#1a7f37, #3fb950);
+  }
+  :root[data-theme="dark"] { color-scheme: dark; }
+  :root[data-theme="light"] { color-scheme: light; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font: 13px/1.5 system-ui, sans-serif; color: var(--text); background: var(--bg); display: flex; flex-direction: column; height: 100dvh; }
+  header { padding: 8px 12px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; background: var(--bg2); }
+  header h1 { font-size: 15px; }
+  select, button { padding: 3px 8px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg); color: var(--text); font: inherit; cursor: pointer; }
+  button:hover { background: var(--bg2); }
+  #share-copied { font-size: 12px; color: var(--green); opacity: 0; transition: opacity .2s; }
+  #share-copied.visible { opacity: 1; }
+  #rule-count { margin-left: auto; font-size: 12px; color: var(--muted); }
+  .layout { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 420px; }
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; grid-template-rows: 1fr 300px; }
+    .results-pane { border-left: none !important; border-top: 1px solid var(--border); }
+  }
+  #editor-container { min-width: 0; min-height: 0; }
+  .results-pane { display: flex; flex-direction: column; min-width: 0; overflow: hidden; border-left: 1px solid var(--border); }
+  .pane-header { padding: 6px 12px; font-size: 11px; font-weight: 600; color: var(--muted); background: var(--bg2); border-bottom: 1px solid var(--border); text-transform: uppercase; letter-spacing: .5px; }
+  .results-list { flex: 1; overflow-y: auto; }
+  .result-item { padding: 6px 12px; border-bottom: 1px solid var(--border); display: grid; grid-template-columns: 14px 40px 1fr auto; gap: 6px; align-items: baseline; cursor: pointer; }
+  .result-item:hover { background: var(--bg2); }
+  .severity-error { border-left: 3px solid var(--error); }
+  .severity-warn { border-left: 3px solid var(--warn); }
+  .result-icon { width: 14px; height: 14px; position: relative; top: 2px; }
+  .severity-error :is(.result-icon, .result-location) { color: var(--error); }
+  .severity-warn :is(.result-icon, .result-location) { color: var(--warn); }
+  .result-location { font: 12px ui-monospace, monospace; color: var(--muted); }
+  .result-message { min-width: 0; }
+  .result-rule { font-size: 11px; white-space: nowrap; text-decoration: none; color: var(--accent); }
+  .result-rule:hover { text-decoration: underline; }
+  .result-rule.custom { color: var(--green); }
+  .empty-state { padding: 40px 20px; text-align: center; color: var(--muted); }
+  .summary { padding: 6px 12px; font-size: 12px; color: var(--muted); border-top: 1px solid var(--border); background: var(--bg2); }
+  .summary .errors { color: var(--error); font-weight: 600; }
+  .summary .warnings { color: var(--warn); font-weight: 600; }
+</style>
+</head>
+<body>
+<header>
+  <h1>wt-eslint-node playground</h1>
+  <label for="config-select">Config:</label>
+  <select id="config-select">
+    <option value="node">Node</option>
+    <option value="browser">Browser</option>
+    <option value="custom-only">Custom rules only</option>
+  </select>
+  <button id="share-btn" type="button">Copy link</button>
+  <span id="share-copied">Copied!</span>
+  <span id="rule-count"></span>
+</header>
+<div class="layout">
+  <div id="editor-container"></div>
+  <div class="results-pane">
+    <div class="pane-header">Problems</div>
+    <div class="results-list" id="results"></div>
+    <div class="summary" id="summary"></div>
+  </div>
+</div>
+<template id="error-icon"><svg class="result-icon" viewBox="0 0 16 16" fill="currentColor" aria-label="Error">
+  <circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/>
+  <path d="M5.2 5.2l5.6 5.6M10.8 5.2l-5.6 5.6" stroke="currentColor" stroke-width="1.5" fill="none"/>
+</svg></template>
+<template id="warn-icon"><svg class="result-icon" viewBox="0 0 16 16" fill="currentColor" aria-label="Warning">
+  <path d="M7.13 1.45a1 1 0 011.74 0l6 10.5A1 1 0 0114 13.5H2a1 1 0 01-.87-1.55z" fill="none" stroke="currentColor" stroke-width="1.3"/>
+  <path d="M8 6v3.5M8 11.5v0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+</svg></template>
+<script src="bundle.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs/loader.js"></script>
+<script>
+const DEFAULT_CODE = `// Paste code here to test the ESLint rules from this PR.
+// Errors and warnings appear as squiggly underlines.
+
+const FOO = { x: y % 2 == 0 };
+
+const items = [1, 2, 3];
+const doubled = items.reduce((a, item) => [...a, item * 2], []);
+
+function doSomething(e) {
+  console.log(e);
+}`;
+
+async function writeParams(code, config) {
+  const stream = new Blob([code]).stream().pipeThrough(new CompressionStream('deflate-raw'));
+  const encoded = new Uint8Array(await new Response(stream).arrayBuffer()).toBase64({ alphabet: 'base64url', omitPadding: true });
+  history.replaceState(null, '', `?${new URLSearchParams({ config, code: encoded })}`);
+}
+
+function escapeHtml(text) {
+  return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+const ERROR_ICON = document.getElementById('error-icon').innerHTML;
+const WARN_ICON = document.getElementById('warn-icon').innerHTML;
+
+const isDark = document.documentElement.dataset.theme === 'dark'
+  || (document.documentElement.dataset.theme !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
+
+require.config({
+  paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs' },
+});
+
+require(['vs/editor/editor.main'], async () => {
+  const urlParams = new URLSearchParams(location.search);
+  const { lint, getRules, getCustomRuleNames, getRuleUrl } = window.playground;
+
+  let initialCode = DEFAULT_CODE;
+  const encodedCode = urlParams.get('code');
+  if (encodedCode) {
+    try {
+      const buffer = Uint8Array.fromBase64(encodedCode, { alphabet: 'base64url' }).buffer;
+      initialCode = await new Response(new Blob([buffer]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).text();
+    } catch {}
+  }
+
+  const configSelect = document.getElementById('config-select');
+  if (urlParams.get('config')) configSelect.value = urlParams.get('config');
+
+  const editor = monaco.editor.create(document.getElementById('editor-container'), {
+    value: initialCode,
+    language: 'javascript',
+    theme: isDark ? 'vs-dark' : 'vs',
+    minimap: { enabled: false },
+    scrollBeyondLastLine: false,
+    automaticLayout: true,
+    tabSize: 2,
+    overviewRulerLanes: 0,
+    padding: { top: 8, bottom: 8 },
+  });
+
+  const resultsEl = document.getElementById('results');
+  const summaryEl = document.getElementById('summary');
+  const ruleCountEl = document.getElementById('rule-count');
+  const shareCopied = document.getElementById('share-copied');
+  const customRules = new Set(getCustomRuleNames());
+  let lintTimer, urlTimer;
+
+  const updateRuleCount = () => {
+    const ruleNames = Object.keys(getRules(configSelect.value));
+    ruleCountEl.textContent = `${ruleNames.length} rules (${ruleNames.filter(name => customRules.has(name)).length} custom)`;
+  };
+
+  const runLint = () => {
+    const messages = lint(editor.getValue(), configSelect.value);
+
+    monaco.editor.setModelMarkers(editor.getModel(), 'eslint', messages.map(message => ({
+      severity: message.severity === 2 ? monaco.MarkerSeverity.Error : monaco.MarkerSeverity.Warning,
+      message: message.message,
+      startLineNumber: message.line,
+      startColumn: message.column,
+      endLineNumber: message.endLine || message.line,
+      endColumn: message.endColumn || message.column + 1,
+      code: message.ruleId && { value: message.ruleId, target: monaco.Uri.parse(getRuleUrl(message.ruleId)) },
+    })));
+
+    if (!messages.length) {
+      resultsEl.innerHTML = '<div class="empty-state">No issues found.</div>';
+      summaryEl.textContent = '';
+      return;
+    }
+
+    const errorCount = messages.filter(message => message.severity === 2).length;
+    const warningCount = messages.length - errorCount;
+
+    resultsEl.innerHTML = messages.map(message => {
+      const isError = message.severity === 2;
+      const ruleUrl = message.ruleId ? getRuleUrl(message.ruleId) : '';
+      const customClass = customRules.has(message.ruleId) ? ' custom' : '';
+      const ruleTag = ruleUrl
+        ? `<a class="result-rule${customClass}" href="${escapeHtml(ruleUrl)}" target="_blank" rel="noopener">${escapeHtml(message.ruleId)}</a>`
+        : `<span class="result-rule${customClass}">${escapeHtml(message.ruleId || '')}</span>`;
+
+      return `<div class="result-item ${isError ? 'severity-error' : 'severity-warn'}" data-line="${message.line}" data-col="${message.column}">
+        ${isError ? ERROR_ICON : WARN_ICON}
+        <span class="result-location">${message.line}:${message.column}</span>
+        <span class="result-message">${escapeHtml(message.message)}</span>
+        ${ruleTag}
+      </div>`;
+    }).join('');
+
+    summaryEl.innerHTML = [
+      errorCount && `<span class="errors">${errorCount} error${errorCount === 1 ? '' : 's'}</span>`,
+      warningCount && `<span class="warnings">${warningCount} warning${warningCount === 1 ? '' : 's'}</span>`,
+    ].filter(Boolean).join(', ');
+  };
+
+  const scheduleUrlUpdate = () => {
+    clearTimeout(urlTimer);
+    urlTimer = setTimeout(() => writeParams(editor.getValue(), configSelect.value), 500);
+  };
+
+  resultsEl.addEventListener('click', (event) => {
+    const item = event.target.closest('.result-item');
+    if (!item) return;
+    const line = Number(item.dataset.line), col = Number(item.dataset.col);
+    editor.revealLineInCenter(line);
+    editor.setPosition({ lineNumber: line, column: col });
+    editor.focus();
+  });
+
+  document.getElementById('share-btn').addEventListener('click', async () => {
+    await writeParams(editor.getValue(), configSelect.value);
+    await navigator.clipboard.writeText(location.href);
+    shareCopied.classList.add('visible');
+    setTimeout(() => shareCopied.classList.remove('visible'), 1500);
+  });
+
+  editor.onDidChangeModelContent(() => {
+    clearTimeout(lintTimer);
+    lintTimer = setTimeout(runLint, 200);
+    scheduleUrlUpdate();
+  });
+
+  configSelect.addEventListener('change', () => {
+    updateRuleCount();
+    runLint();
+    scheduleUrlUpdate();
+  });
+
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (event) => {
+    if (!document.documentElement.dataset.theme) {
+      monaco.editor.setTheme(event.matches ? 'vs-dark' : 'vs');
+    }
+  });
+
+  updateRuleCount();
+  runLint();
+  writeParams(editor.getValue(), configSelect.value);
+});
+</script>
+</body>
+</html>
