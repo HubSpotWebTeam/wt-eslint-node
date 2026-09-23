@@ -1,7 +1,7 @@
 import { build } from 'esbuild';
 import { execSync } from 'node:child_process';
 import { resolve } from 'node:path';
-import { cp } from 'node:fs/promises';
+import { cp, readFile } from 'node:fs/promises';
 
 const root = resolve(import.meta.dirname, '..');
 const outdir = resolve(root, 'playground/dist');
@@ -12,17 +12,8 @@ const gitRef =
   process.env.GITHUB_SHA ||
   execSync('git rev-parse --abbrev-ref HEAD', { cwd: root, encoding: 'utf8' }).trim();
 
-function resolveRepoUrl() {
-  if (process.env.GITHUB_SERVER_URL && process.env.GITHUB_REPOSITORY) {
-    return `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}`;
-  }
-  const raw = execSync('git remote get-url origin', { cwd: root, encoding: 'utf8' }).trim();
-  const sshMatch = raw.match(/^git@([^:]+):(.+?)(?:\.git)?$/);
-  if (sshMatch) return `https://${sshMatch[1]}/${sshMatch[2]}`;
-  return raw.replace(/\.git$/, '');
-}
-
-const repoUrl = resolveRepoUrl();
+const packageJson = JSON.parse(await readFile(resolve(root, 'package.json'), 'utf8'));
+const repoUrl = packageJson.repository.url.replace(/^git\+/, '').replace(/\.git$/, '');
 
 await build({
   entryPoints: [resolve(root, 'playground/entry.js')],

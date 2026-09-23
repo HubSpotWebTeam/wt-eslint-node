@@ -14,46 +14,59 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  deploy:
-    if: github.event.action != 'closed'
+  playground:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.action == 'closed' && 'main' || '' }}
 
       - uses: actions/setup-node@v6
+        if: github.event.action != 'closed'
         with:
           node-version: 24
 
-      - run: npm install
+      - if: github.event.action != 'closed'
+        run: npm install
 
       - name: Build playground
+        if: github.event.action != 'closed'
         run: node playground/build.js
 
-      - name: Deploy to gh-pages
+      - name: Update gh-pages
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}
+          IS_CLEANUP: ${{ github.event.action == 'closed' }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
           DEPLOY_DIR="pr/${PR_NUMBER}"
-          BUILD=$(mktemp -d)
-          cp -r playground/dist/* "$BUILD/"
 
-          # Switch to gh-pages, creating it if it doesn't exist. -f discards the
-          # working tree (build output is already copied to $BUILD above) since
-          # `npm install` can leave package-lock.json modified, which otherwise
-          # blocks the checkout and wrongly falls through to the orphan branch.
-          git fetch origin gh-pages 2>/dev/null && git checkout -f gh-pages || {
-            git checkout --orphan gh-pages
-            git rm -rf .
-          }
+          if [ "$IS_CLEANUP" = "true" ]; then
+            git fetch origin gh-pages 2>/dev/null || exit 0
+            git checkout gh-pages
+            [ -d "$DEPLOY_DIR" ] || exit 0
+            git rm -rf "$DEPLOY_DIR"
+          else
+            BUILD=$(mktemp -d)
+            cp -r playground/dist/* "$BUILD/"
 
-          mkdir -p "$DEPLOY_DIR"
-          cp -r "$BUILD/." "$DEPLOY_DIR/"
-          git add "$DEPLOY_DIR"
+            # -f discards the working tree (npm install can leave package-lock.json
+            # modified, which otherwise blocks the checkout).
+            git fetch origin gh-pages 2>/dev/null && git checkout -f gh-pages || {
+              git checkout --orphan gh-pages
+              git rm -rf .
+            }
+
+            mkdir -p "$DEPLOY_DIR"
+            cp -r "$BUILD/." "$DEPLOY_DIR/"
+            git add "$DEPLOY_DIR"
+          fi
+
           git diff --cached --quiet && exit 0
-          git commit -m "Deploy playground for PR #${PR_NUMBER}"
+          ACTION=$( [ "$IS_CLEANUP" = "true" ] && echo "Remove" || echo "Deploy" )
+          git commit -m "${ACTION} playground for PR #${PR_NUMBER}"
 
           # Other PRs push to the same branch concurrently but only ever touch
           # their own pr/<n> dir, so rebasing onto the latest tip is conflict-free.
@@ -68,6 +81,7 @@ jobs:
           exit 1
 
       - name: Comment on PR
+        if: github.event.action != 'closed'
         uses: actions/github-script@v7
         with:
           script: |
@@ -86,33 +100,3 @@ jobs:
             await (existing
               ? github.rest.issues.updateComment({ owner, repo, comment_id: existing.id, body })
               : github.rest.issues.createComment({ owner, repo, issue_number: prNumber, body }));
-
-  cleanup:
-    if: github.event.action == 'closed'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          ref: gh-pages
-
-      - name: Remove playground for closed PR
-        env:
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-        run: |
-          DEPLOY_DIR="pr/${PR_NUMBER}"
-          [ -d "$DEPLOY_DIR" ] || exit 0
-
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git rm -rf "$DEPLOY_DIR"
-          git commit -m "Remove playground for PR #${PR_NUMBER}"
-
-          for attempt in 1 2 3 4 5; do
-            git push origin gh-pages && exit 0
-            git fetch origin gh-pages
-            git rebase origin/gh-pages || { git rebase --abort; break; }
-            sleep $((RANDOM % 5 + 1))
-          done
-
-          echo "Failed to push to gh-pages after 5 attempts" >&2
-          exit 1
