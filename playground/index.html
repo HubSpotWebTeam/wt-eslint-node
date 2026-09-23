@@ -37,7 +37,7 @@
   .results-pane { display: flex; flex-direction: column; min-width: 0; overflow: hidden; border-left: 1px solid var(--border); }
   .pane-header { padding: 6px 12px; font-size: 11px; font-weight: 600; color: var(--muted); background: var(--bg2); border-bottom: 1px solid var(--border); text-transform: uppercase; letter-spacing: .5px; }
   .results-list { flex: 1; overflow-y: auto; }
-  .result-item { padding: 6px 12px; border-bottom: 1px solid var(--border); display: grid; grid-template-columns: 14px 40px 1fr auto; gap: 6px; align-items: baseline; cursor: pointer; }
+  .result-item { padding: 6px 12px; border-bottom: 1px solid var(--border); display: grid; grid-template-columns: 14px 40px 1fr; gap: 6px; align-items: baseline; cursor: pointer; }
   .result-item:hover { background: var(--bg2); }
   .severity-error { border-left: 3px solid var(--error); }
   .severity-warn { border-left: 3px solid var(--warn); }
@@ -46,7 +46,7 @@
   .severity-warn :is(.result-icon, .result-location) { color: var(--warn); }
   .result-location { font: 12px ui-monospace, monospace; color: var(--muted); }
   .result-message { min-width: 0; }
-  .result-rule { font-size: 11px; white-space: nowrap; text-decoration: none; color: var(--accent); }
+  .result-rule { font-size: 11px; white-space: nowrap; text-decoration: none; color: var(--accent); margin-left: 4px; }
   .result-rule:hover { text-decoration: underline; }
   .result-rule.custom { color: var(--green); }
   .empty-state { padding: 40px 20px; text-align: center; color: var(--muted); }
@@ -192,8 +192,7 @@ require(['vs/editor/editor.main'], async () => {
       return `<div class="result-item ${isError ? 'severity-error' : 'severity-warn'}" data-line="${message.line}" data-col="${message.column}">
         ${isError ? ERROR_ICON : WARN_ICON}
         <span class="result-location">${message.line}:${message.column}</span>
-        <span class="result-message">${escapeHtml(message.message)}</span>
-        ${ruleTag}
+        <span class="result-message">${escapeHtml(message.message)} ${ruleTag}</span>
       </div>`;
     }).join('');
 
