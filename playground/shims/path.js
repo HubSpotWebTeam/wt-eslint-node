@@ -13,9 +13,7 @@ export function join(...segments) {
   return segments.join('/').replace(/\/+/g, '/');
 }
 
-export function resolve(...segments) {
-  return join(...segments);
-}
+export const resolve = join;
 
 export function dirname(filename) {
   const lastSlash = filename.lastIndexOf('/');

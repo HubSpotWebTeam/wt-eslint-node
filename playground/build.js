@@ -1,10 +1,9 @@
 import { build } from 'esbuild';
 import { execSync } from 'node:child_process';
-import { fileURLToPath } from 'node:url';
-import { dirname, resolve } from 'node:path';
+import { resolve } from 'node:path';
 import { cp } from 'node:fs/promises';
 
-const root = dirname(dirname(fileURLToPath(import.meta.url)));
+const root = resolve(import.meta.dirname, '..');
 const outdir = resolve(root, 'playground/dist');
 const shims = resolve(root, 'playground/shims');
 
