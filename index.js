@@ -3,58 +3,10 @@ import globals from 'globals';
 import tseslint from 'typescript-eslint';
 import { claudeCodePlugin } from './plugins/claude-code/index.js';
 import { hsWebTeamPlugin } from './plugins/hs-web-team/index.js';
-
-// Base rules for all JavaScript files
-const baseRules = {
-  'no-console': [
-    'error',
-    {
-      allow: ['info', 'warn', 'error'],
-    },
-  ],
-  camelcase: 'off',
-  'comma-dangle': ['warn', 'always-multiline'],
-  'arrow-parens': 0,
-  'no-plusplus': 0,
-  'no-underscore-dangle': [
-    'error',
-    {
-      allow: [
-        '__dirname',
-        '__filename',
-      ],
-    },
-  ],
-  'no-confusing-arrow': 0,
-  'import/no-unresolved': 0,
-  'import/prefer-default-export': 0,
-  'no-trailing-spaces': ['error', { skipBlankLines: true }],
-  'no-unused-expressions': ['warn', { allowTernary: true }],
-  'max-len': [
-    2,
-    {
-      code: 120,
-      ignoreStrings: true,
-      ignoreTemplateLiterals: true,
-    },
-  ],
-  'operator-linebreak': 0,
-  'implicit-arrow-linebreaks': 0,
-  'implicit-arrow-linebreak': 0,
-  'object-curly-newline': 0,
-  'newline-per-chained-call': 0,
-  indent: 0,
-  'function-paren-newline': 0,
-  'max-params': ['warn', { max: 3 }],
-};
+import { nodeBaseRules as baseRules } from './base-rules.js';
 
 // Common ignore patterns
-const commonIgnores = [
-  '**/node_modules/**',
-  '**/.serverless/**',
-  '**/.webpack/**',
-  '**/dist/**',
-];
+const commonIgnores = ['**/node_modules/**', '**/.serverless/**', '**/.webpack/**', '**/dist/**'];
 
 export default [
   // Global ignores
@@ -67,7 +19,7 @@ export default [
   {
     files: ['**/*.{js,mjs,cjs}'],
     languageOptions: {
-      globals: {...globals.node, ...globals.es2022, ...globals.jest},
+      globals: { ...globals.node, ...globals.es2022, ...globals.jest },
     },
     rules: baseRules,
   },
@@ -80,7 +32,7 @@ export default [
   {
     files: ['**/*.{ts,mts,cts,tsx}'],
     languageOptions: {
-      globals: {...globals.node, ...globals.es2022, ...globals.jest},
+      globals: { ...globals.node, ...globals.es2022, ...globals.jest },
     },
     rules: baseRules,
   },

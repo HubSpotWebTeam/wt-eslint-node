@@ -65,24 +65,33 @@
     border-bottom: 1px solid var(--border);
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 12px;
     flex-wrap: wrap;
     background: var(--bg-subtle);
   }
   header h1 { font-size: 15px; font-weight: 600; white-space: nowrap; }
   .controls { display: flex; gap: 8px; align-items: center; font-size: 13px; }
-  select {
+  select, button {
     padding: 3px 8px;
     border: 1px solid var(--border);
     border-radius: 6px;
     background: var(--bg);
     color: var(--text);
     font-size: 13px;
+    cursor: pointer;
   }
-  .rule-count { font-size: 12px; color: var(--text-muted); margin-left: auto; }
+  button:hover { background: var(--bg-subtle); }
+  .share-copied {
+    font-size: 12px;
+    color: var(--custom-tag-text);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .share-copied.visible { opacity: 1; }
+  .header-right { margin-left: auto; font-size: 12px; color: var(--text-muted); }
   .layout {
     display: grid;
-    grid-template-columns: 1fr 380px;
+    grid-template-columns: 1fr 420px;
     height: calc(100vh - 43px);
   }
   @media (max-width: 900px) {
@@ -112,26 +121,31 @@
     padding: 6px 12px;
     border-bottom: 1px solid var(--border);
     font-size: 13px;
-    display: flex;
-    gap: 8px;
+    display: grid;
+    grid-template-columns: 14px 40px 1fr auto;
+    gap: 6px;
     align-items: baseline;
     cursor: pointer;
   }
   .result-item:hover { background: var(--bg-subtle); }
+  .result-icon { width: 14px; height: 14px; flex-shrink: 0; position: relative; top: 2px; }
+  .severity-error .result-icon { color: var(--error-text); }
+  .severity-warn .result-icon { color: var(--warn-text); }
   .result-location {
     font-family: 'SF Mono', Menlo, Consolas, monospace;
     font-size: 12px;
     color: var(--text-muted);
     white-space: nowrap;
-    min-width: 36px;
   }
-  .result-message { flex: 1; min-width: 0; word-break: break-word; }
+  .result-message { min-width: 0; }
   .result-rule {
     font-size: 10px;
     padding: 1px 6px;
     border-radius: 10px;
     white-space: nowrap;
+    text-decoration: none;
   }
+  .result-rule:hover { text-decoration: underline; }
   .result-rule.builtin { background: var(--tag-bg); color: var(--tag-text); }
   .result-rule.custom { background: var(--custom-tag-bg); color: var(--custom-tag-text); }
   .severity-error .result-location { color: var(--error-text); }
@@ -161,7 +175,11 @@
       <option value="custom-only">Custom rules only</option>
     </select>
   </div>
-  <span class="rule-count" id="rule-count"></span>
+  <div class="controls">
+    <button id="share-btn" type="button">Copy link</button>
+    <span class="share-copied" id="share-copied">Copied!</span>
+  </div>
+  <span class="header-right" id="rule-count"></span>
 </header>
 <div class="layout">
   <div class="editor-pane" id="editor-container"></div>
@@ -175,30 +193,108 @@
 <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs/loader.js"></script>
 <script>
 (function () {
+  var DEFAULT_CODE = [
+    '// Paste code here to test the ESLint rules from this PR.',
+    '// Errors and warnings appear as squiggly underlines.',
+    '',
+    'const FOO = { x: y % 2 == 0 };',
+    '',
+    'const items = [1, 2, 3];',
+    'const doubled = items.reduce((a, item) => [...a, item * 2], []);',
+    '',
+    'function doSomething(e) {',
+    '  console.log(e);',
+    '}',
+  ].join('\n');
+
+  // --- URL codec (deflate-raw + base64url → query params via replaceState) ---
+
+  function toBase64Url(buffer) {
+    var bytes = new Uint8Array(buffer);
+    var binary = '';
+    for (var idx = 0; idx < bytes.length; idx++) binary += String.fromCharCode(bytes[idx]);
+    return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  }
+
+  function fromBase64Url(encoded) {
+    var base64 = encoded.replace(/-/g, '+').replace(/_/g, '/');
+    var binary = atob(base64);
+    var bytes = new Uint8Array(binary.length);
+    for (var idx = 0; idx < binary.length; idx++) bytes[idx] = binary.charCodeAt(idx);
+    return bytes.buffer;
+  }
+
+  async function compress(text) {
+    var stream = new Blob([text]).stream().pipeThrough(new CompressionStream('deflate-raw'));
+    return toBase64Url(await new Response(stream).arrayBuffer());
+  }
+
+  async function decompress(encoded) {
+    var buffer = fromBase64Url(encoded);
+    var stream = new Blob([buffer]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
+    return new Response(stream).text();
+  }
+
+  function readParams() {
+    var params = new URLSearchParams(location.search);
+    return { code: params.get('code'), config: params.get('config') };
+  }
+
+  async function writeParams(code, config) {
+    var encoded = await compress(code);
+    var params = new URLSearchParams({ config: config, code: encoded });
+    history.replaceState(null, '', '?' + params.toString());
+  }
+
+  // --- Helpers ---
+
+  function escapeHtml(text) {
+    return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  var ERROR_ICON = '<svg class="result-icon" viewBox="0 0 16 16" fill="currentColor" aria-label="Error">'
+    + '<circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/>'
+    + '<path d="M5.2 5.2l5.6 5.6M10.8 5.2l-5.6 5.6" stroke="currentColor" stroke-width="1.5" fill="none"/>'
+    + '</svg>';
+  var WARN_ICON = '<svg class="result-icon" viewBox="0 0 16 16" fill="currentColor" aria-label="Warning">'
+    + '<path d="M7.13 1.45a1 1 0 011.74 0l6 10.5A1 1 0 0114 13.5H2a1 1 0 01-.87-1.55z" fill="none" stroke="currentColor" stroke-width="1.3"/>'
+    + '<path d="M8 6v3.5M8 11.5v0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>'
+    + '</svg>';
+
+  // --- Theme ---
+
   var isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
   var themeAttr = document.documentElement.getAttribute('data-theme');
   if (themeAttr === 'dark') isDark = true;
   else if (themeAttr === 'light') isDark = false;
 
+  // --- Monaco ---
+
   require.config({
     paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs' },
   });
 
-  require(['vs/editor/editor.main'], function () {
+  require(['vs/editor/editor.main'], async function () {
+    var urlState = readParams();
+    var initialCode = DEFAULT_CODE;
+    if (urlState.code) {
+      try { initialCode = await decompress(urlState.code); } catch (_) { /* ignore bad param */ }
+    }
+
+    var configSelect = document.getElementById('config-select');
+    if (urlState.config && configs_has(urlState.config)) {
+      configSelect.value = urlState.config;
+    }
+
+    function configs_has(name) {
+      for (var idx = 0; idx < configSelect.options.length; idx++) {
+        if (configSelect.options[idx].value === name) return true;
+      }
+      return false;
+    }
+
     var editor = monaco.editor.create(document.getElementById('editor-container'), {
-      value: [
-        '// Paste code here to test the ESLint rules from this PR.',
-        '// Errors and warnings appear as squiggly underlines.',
-        '',
-        'const FOO = { x: y % 2 == 0 };',
-        '',
-        'const items = [1, 2, 3];',
-        'const doubled = items.reduce((a, item) => [...a, item * 2], []);',
-        '',
-        'function doSomething(e) {',
-        '  console.log(e);',
-        '}',
-      ].join('\n'),
+      value: initialCode,
       language: 'javascript',
       theme: isDark ? 'vs-dark' : 'vs',
       minimap: { enabled: false },
@@ -215,10 +311,12 @@
 
     var resultsEl = document.getElementById('results');
     var summaryEl = document.getElementById('summary');
-    var configSelect = document.getElementById('config-select');
     var ruleCountEl = document.getElementById('rule-count');
+    var shareBtn = document.getElementById('share-btn');
+    var shareCopied = document.getElementById('share-copied');
     var customRules = new Set(window.playground.getCustomRuleNames());
-    var debounceTimer;
+    var lintTimer;
+    var urlTimer;
 
     function updateRuleCount() {
       var rules = window.playground.getRules(configSelect.value);
@@ -232,7 +330,6 @@
       var config = configSelect.value;
       var messages = window.playground.lint(code, config);
 
-      // Set Monaco markers for inline squiggles
       var markers = messages.map(function (message) {
         return {
           severity: message.severity === 2
@@ -242,14 +339,13 @@
           startLineNumber: message.line,
           startColumn: message.column,
           endLineNumber: message.endLine || message.line,
-          endColumn: (message.endColumn || message.column + 1),
+          endColumn: message.endColumn || message.column + 1,
           source: 'eslint',
           code: message.ruleId,
         };
       });
       monaco.editor.setModelMarkers(editor.getModel(), 'eslint', markers);
 
-      // Render results list
       if (messages.length === 0) {
         resultsEl.innerHTML = '<div class="empty-state">No issues found.</div>';
         summaryEl.textContent = '';
@@ -269,11 +365,16 @@
         var severityClass = isError ? 'severity-error' : 'severity-warn';
         var ruleClass = isCustom ? 'custom' : 'builtin';
 
+        var ruleUrl = message.ruleId ? window.playground.getRuleUrl(message.ruleId) : '';
+
         html += '<div class="result-item ' + severityClass + '" data-index="' + index + '"'
           + ' data-line="' + message.line + '" data-col="' + message.column + '">'
+          + (isError ? ERROR_ICON : WARN_ICON)
           + '<span class="result-location">' + message.line + ':' + message.column + '</span>'
           + '<span class="result-message">' + escapeHtml(message.message) + '</span>'
-          + '<span class="result-rule ' + ruleClass + '">' + escapeHtml(message.ruleId || '') + '</span>'
+          + (ruleUrl
+            ? '<a class="result-rule ' + ruleClass + '" href="' + escapeHtml(ruleUrl) + '" target="_blank" rel="noopener">' + escapeHtml(message.ruleId) + '</a>'
+            : '<span class="result-rule ' + ruleClass + '">' + escapeHtml(message.ruleId || '') + '</span>')
           + '</div>';
       });
 
@@ -285,7 +386,14 @@
       summaryEl.innerHTML = parts.join(', ');
     }
 
-    // Click a result to jump to that line in the editor
+    function scheduleUrlUpdate() {
+      clearTimeout(urlTimer);
+      urlTimer = setTimeout(function () {
+        writeParams(editor.getValue(), configSelect.value);
+      }, 500);
+    }
+
+    // Click result → jump to line
     resultsEl.addEventListener('click', function (event) {
       var item = event.target.closest('.result-item');
       if (!item) return;
@@ -296,23 +404,26 @@
       editor.focus();
     });
 
-    function escapeHtml(text) {
-      var div = document.createElement('div');
-      div.appendChild(document.createTextNode(text));
-      return div.innerHTML;
-    }
+    // Copy shareable link
+    shareBtn.addEventListener('click', async function () {
+      await writeParams(editor.getValue(), configSelect.value);
+      await navigator.clipboard.writeText(location.href);
+      shareCopied.classList.add('visible');
+      setTimeout(function () { shareCopied.classList.remove('visible'); }, 1500);
+    });
 
     editor.onDidChangeModelContent(function () {
-      clearTimeout(debounceTimer);
-      debounceTimer = setTimeout(lint, 200);
+      clearTimeout(lintTimer);
+      lintTimer = setTimeout(lint, 200);
+      scheduleUrlUpdate();
     });
 
     configSelect.addEventListener('change', function () {
       updateRuleCount();
       lint();
+      scheduleUrlUpdate();
     });
 
-    // Respond to system theme changes
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (event) {
       if (!document.documentElement.getAttribute('data-theme')) {
         monaco.editor.setTheme(event.matches ? 'vs-dark' : 'vs');
@@ -321,6 +432,7 @@
 
     updateRuleCount();
     lint();
+    writeParams(editor.getValue(), configSelect.value);
   });
 })();
 </script>

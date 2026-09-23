@@ -5,6 +5,7 @@
   "files": [
     ".prettierrc.json",
     ".stylelintrc.json",
+    "base-rules.js",
     "bin/",
     "browser.js",
     "cypress.config.cjs",
