@@ -37,8 +37,8 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
           DEPLOY_DIR="pr/${PR_NUMBER}"
-          TMPDIR=$(mktemp -d)
-          cp -r playground/dist/* "$TMPDIR/"
+          BUILD=$(mktemp -d)
+          cp -r playground/dist/* "$BUILD/"
 
           # Switch to gh-pages, creating it if it doesn't exist
           git fetch origin gh-pages 2>/dev/null && git checkout gh-pages || {
@@ -47,13 +47,22 @@ jobs:
           }
 
           mkdir -p "$DEPLOY_DIR"
-          cp -r "$TMPDIR/." "$DEPLOY_DIR/"
-
+          cp -r "$BUILD/." "$DEPLOY_DIR/"
           git add "$DEPLOY_DIR"
-          git diff --cached --quiet && echo "No changes" || {
-            git commit -m "Deploy playground for PR #${PR_NUMBER}"
-            git push origin gh-pages
-          }
+          git diff --cached --quiet && exit 0
+          git commit -m "Deploy playground for PR #${PR_NUMBER}"
+
+          # Other PRs push to the same branch concurrently but only ever touch
+          # their own pr/<n> dir, so rebasing onto the latest tip is conflict-free.
+          for attempt in 1 2 3 4 5; do
+            git push origin gh-pages && exit 0
+            git fetch origin gh-pages
+            git rebase origin/gh-pages || { git rebase --abort; break; }
+            sleep $((RANDOM % 5 + 1))
+          done
+
+          echo "Failed to push to gh-pages after 5 attempts" >&2
+          exit 1
 
       - name: Comment on PR
         uses: actions/github-script@v7
@@ -88,10 +97,19 @@ jobs:
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           DEPLOY_DIR="pr/${PR_NUMBER}"
-          if [ -d "$DEPLOY_DIR" ]; then
-            git config user.name "github-actions[bot]"
-            git config user.email "github-actions[bot]@users.noreply.github.com"
-            git rm -rf "$DEPLOY_DIR"
-            git commit -m "Remove playground for PR #${PR_NUMBER}"
-            git push origin gh-pages
-          fi
+          [ -d "$DEPLOY_DIR" ] || exit 0
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git rm -rf "$DEPLOY_DIR"
+          git commit -m "Remove playground for PR #${PR_NUMBER}"
+
+          for attempt in 1 2 3 4 5; do
+            git push origin gh-pages && exit 0
+            git fetch origin gh-pages
+            git rebase origin/gh-pages || { git rebase --abort; break; }
+            sleep $((RANDOM % 5 + 1))
+          done
+
+          echo "Failed to push to gh-pages after 5 attempts" >&2
+          exit 1
