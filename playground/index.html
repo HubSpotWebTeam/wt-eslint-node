@@ -164,12 +164,12 @@ require(['vs/editor/editor.main'], async () => {
 
     monaco.editor.setModelMarkers(editor.getModel(), 'eslint', messages.map(message => ({
       severity: message.severity === 2 ? monaco.MarkerSeverity.Error : monaco.MarkerSeverity.Warning,
-      message: `${message.message} (${message.ruleId})`,
+      message: message.message,
       startLineNumber: message.line,
       startColumn: message.column,
       endLineNumber: message.endLine || message.line,
       endColumn: message.endColumn || message.column + 1,
-      code: message.ruleId,
+      code: message.ruleId && { value: message.ruleId, target: monaco.Uri.parse(getRuleUrl(message.ruleId)) },
     })));
 
     if (!messages.length) {
