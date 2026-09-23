@@ -40,8 +40,11 @@ jobs:
           BUILD=$(mktemp -d)
           cp -r playground/dist/* "$BUILD/"
 
-          # Switch to gh-pages, creating it if it doesn't exist
-          git fetch origin gh-pages 2>/dev/null && git checkout gh-pages || {
+          # Switch to gh-pages, creating it if it doesn't exist. -f discards the
+          # working tree (build output is already copied to $BUILD above) since
+          # `npm install` can leave package-lock.json modified, which otherwise
+          # blocks the checkout and wrongly falls through to the orphan branch.
+          git fetch origin gh-pages 2>/dev/null && git checkout -f gh-pages || {
             git checkout --orphan gh-pages
             git rm -rf .
           }
