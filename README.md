@@ -187,7 +187,6 @@ This package ships a `hs-web-team` ESLint plugin with custom rules that are acti
 | Rule | Severity | Summary |
 |------|----------|---------|
 | `hs-web-team/no-reduce-accumulator-copy` | error | Disallows O(n²) accumulator copies (spread, concat) inside `reduce`/`reduceRight` |
-| `hs-web-team/no-non-literal-constant-case` | warn | Disallows CONSTANT_CASE names whose value isn't a literal/static constant, or that are declared with `let`/`var` |
 
 For examples and remediation guidance, see [examples/custom-rules.md](./examples/custom-rules.md).
 
