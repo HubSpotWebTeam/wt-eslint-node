@@ -1,0 +1,102 @@
+name: Playground
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, closed]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: playground-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    if: github.event.action != 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - run: npm install
+
+      - name: Build playground
+        run: node playground/build.js
+
+      - name: Deploy to gh-pages
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          DEPLOY_DIR="pr/${PR_NUMBER}"
+          TMPDIR=$(mktemp -d)
+          cp -r playground/dist/* "$TMPDIR/"
+
+          # Switch to gh-pages, creating it if it doesn't exist
+          git fetch origin gh-pages 2>/dev/null && git checkout gh-pages || {
+            git checkout --orphan gh-pages
+            git rm -rf .
+          }
+
+          mkdir -p "$DEPLOY_DIR"
+          cp "$TMPDIR/index.html" "$DEPLOY_DIR/"
+          cp "$TMPDIR/bundle.js" "$DEPLOY_DIR/"
+
+          git add "$DEPLOY_DIR"
+          git diff --cached --quiet && echo "No changes" || {
+            git commit -m "Deploy playground for PR #${PR_NUMBER}"
+            git push origin gh-pages
+          }
+
+      - name: Comment on PR
+        uses: actions/github-script@v7
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        with:
+          script: |
+            const prNumber = parseInt(process.env.PR_NUMBER);
+            const { owner, repo } = context.repo;
+            const url = `https://${owner}.github.io/${repo}/pr/${prNumber}/`;
+            const body = `**[ESLint Playground](${url})** — test the rules from this PR in your browser`;
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner, repo, issue_number: prNumber,
+            });
+            const existing = comments.find(c =>
+              c.user.login === 'github-actions[bot]' && c.body.includes('ESLint Playground')
+            );
+
+            if (existing) {
+              await github.rest.issues.updateComment({ owner, repo, comment_id: existing.id, body });
+            } else {
+              await github.rest.issues.createComment({ owner, repo, issue_number: prNumber, body });
+            }
+
+  cleanup:
+    if: github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: gh-pages
+
+      - name: Remove playground for closed PR
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          DEPLOY_DIR="pr/${PR_NUMBER}"
+          if [ -d "$DEPLOY_DIR" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git rm -rf "$DEPLOY_DIR"
+            git commit -m "Remove playground for PR #${PR_NUMBER}"
+            git push origin gh-pages
+          fi

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>wt-eslint-node Playground</title>
+<style>
+  :root {
+    --bg: #fff;
+    --bg-subtle: #f6f8fa;
+    --border: #d1d9e0;
+    --text: #1f2328;
+    --text-muted: #636c76;
+    --error-text: #cf222e;
+    --warn-text: #9a6700;
+    --tag-bg: #ddf4ff;
+    --tag-text: #0969da;
+    --custom-tag-bg: #dafbe1;
+    --custom-tag-text: #1a7f37;
+    --error-border: #ff818266;
+    --warn-border: #d4a72c66;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0d1117;
+      --bg-subtle: #161b22;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --error-text: #f85149;
+      --warn-text: #e3b341;
+      --tag-bg: #121d2f;
+      --tag-text: #58a6ff;
+      --custom-tag-bg: #0f291a;
+      --custom-tag-text: #3fb950;
+      --error-border: #f8514966;
+      --warn-border: #d29922aa;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0d1117;
+    --bg-subtle: #161b22;
+    --border: #30363d;
+    --text: #e6edf3;
+    --text-muted: #8b949e;
+    --error-text: #f85149;
+    --warn-text: #e3b341;
+    --tag-bg: #121d2f;
+    --tag-text: #58a6ff;
+    --custom-tag-bg: #0f291a;
+    --custom-tag-text: #3fb950;
+    --error-border: #f8514966;
+    --warn-border: #d29922aa;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    color: var(--text);
+    background: var(--bg);
+    line-height: 1.5;
+    overflow: hidden;
+  }
+  header {
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    background: var(--bg-subtle);
+  }
+  header h1 { font-size: 15px; font-weight: 600; white-space: nowrap; }
+  .controls { display: flex; gap: 8px; align-items: center; font-size: 13px; }
+  select {
+    padding: 3px 8px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 13px;
+  }
+  .rule-count { font-size: 12px; color: var(--text-muted); margin-left: auto; }
+  .layout {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    height: calc(100vh - 43px);
+  }
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; grid-template-rows: 1fr 300px; }
+    .results-pane { border-left: none !important; border-top: 1px solid var(--border); }
+  }
+  .editor-pane { min-width: 0; min-height: 0; }
+  .results-pane {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    overflow: hidden;
+    border-left: 1px solid var(--border);
+  }
+  .pane-header {
+    padding: 6px 12px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    background: var(--bg-subtle);
+    border-bottom: 1px solid var(--border);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .results-list { flex: 1; overflow-y: auto; }
+  .result-item {
+    padding: 6px 12px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    display: flex;
+    gap: 8px;
+    align-items: baseline;
+    cursor: pointer;
+  }
+  .result-item:hover { background: var(--bg-subtle); }
+  .result-location {
+    font-family: 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 12px;
+    color: var(--text-muted);
+    white-space: nowrap;
+    min-width: 36px;
+  }
+  .result-message { flex: 1; min-width: 0; word-break: break-word; }
+  .result-rule {
+    font-size: 10px;
+    padding: 1px 6px;
+    border-radius: 10px;
+    white-space: nowrap;
+  }
+  .result-rule.builtin { background: var(--tag-bg); color: var(--tag-text); }
+  .result-rule.custom { background: var(--custom-tag-bg); color: var(--custom-tag-text); }
+  .severity-error .result-location { color: var(--error-text); }
+  .severity-warn .result-location { color: var(--warn-text); }
+  .severity-error { border-left: 3px solid var(--error-border); }
+  .severity-warn { border-left: 3px solid var(--warn-border); }
+  .empty-state { padding: 40px 20px; text-align: center; color: var(--text-muted); font-size: 14px; }
+  .summary {
+    padding: 6px 12px;
+    font-size: 12px;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border);
+    background: var(--bg-subtle);
+  }
+  .summary .errors { color: var(--error-text); font-weight: 600; }
+  .summary .warnings { color: var(--warn-text); font-weight: 600; }
+</style>
+</head>
+<body>
+<header>
+  <h1>wt-eslint-node playground</h1>
+  <div class="controls">
+    <label for="config-select">Config:</label>
+    <select id="config-select">
+      <option value="node">Node</option>
+      <option value="browser">Browser</option>
+      <option value="custom-only">Custom rules only</option>
+    </select>
+  </div>
+  <span class="rule-count" id="rule-count"></span>
+</header>
+<div class="layout">
+  <div class="editor-pane" id="editor-container"></div>
+  <div class="results-pane">
+    <div class="pane-header">Problems</div>
+    <div class="results-list" id="results"></div>
+    <div class="summary" id="summary"></div>
+  </div>
+</div>
+<script src="bundle.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs/loader.js"></script>
+<script>
+(function () {
+  var isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  var themeAttr = document.documentElement.getAttribute('data-theme');
+  if (themeAttr === 'dark') isDark = true;
+  else if (themeAttr === 'light') isDark = false;
+
+  require.config({
+    paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs' },
+  });
+
+  require(['vs/editor/editor.main'], function () {
+    var editor = monaco.editor.create(document.getElementById('editor-container'), {
+      value: [
+        '// Paste code here to test the ESLint rules from this PR.',
+        '// Errors and warnings appear as squiggly underlines.',
+        '',
+        'const FOO = { x: y % 2 == 0 };',
+        '',
+        'const items = [1, 2, 3];',
+        'const doubled = items.reduce((a, item) => [...a, item * 2], []);',
+        '',
+        'function doSomething(e) {',
+        '  console.log(e);',
+        '}',
+      ].join('\n'),
+      language: 'javascript',
+      theme: isDark ? 'vs-dark' : 'vs',
+      minimap: { enabled: false },
+      fontSize: 14,
+      lineNumbers: 'on',
+      scrollBeyondLastLine: false,
+      automaticLayout: true,
+      tabSize: 2,
+      renderWhitespace: 'none',
+      overviewRulerLanes: 0,
+      hideCursorInOverviewRuler: true,
+      padding: { top: 8, bottom: 8 },
+    });
+
+    var resultsEl = document.getElementById('results');
+    var summaryEl = document.getElementById('summary');
+    var configSelect = document.getElementById('config-select');
+    var ruleCountEl = document.getElementById('rule-count');
+    var customRules = new Set(window.playground.getCustomRuleNames());
+    var debounceTimer;
+
+    function updateRuleCount() {
+      var rules = window.playground.getRules(configSelect.value);
+      var total = Object.keys(rules).length;
+      var custom = Object.keys(rules).filter(function (name) { return customRules.has(name); }).length;
+      ruleCountEl.textContent = total + ' rules (' + custom + ' custom)';
+    }
+
+    function lint() {
+      var code = editor.getValue();
+      var config = configSelect.value;
+      var messages = window.playground.lint(code, config);
+
+      // Set Monaco markers for inline squiggles
+      var markers = messages.map(function (message) {
+        return {
+          severity: message.severity === 2
+            ? monaco.MarkerSeverity.Error
+            : monaco.MarkerSeverity.Warning,
+          message: message.message + ' (' + message.ruleId + ')',
+          startLineNumber: message.line,
+          startColumn: message.column,
+          endLineNumber: message.endLine || message.line,
+          endColumn: (message.endColumn || message.column + 1),
+          source: 'eslint',
+          code: message.ruleId,
+        };
+      });
+      monaco.editor.setModelMarkers(editor.getModel(), 'eslint', markers);
+
+      // Render results list
+      if (messages.length === 0) {
+        resultsEl.innerHTML = '<div class="empty-state">No issues found.</div>';
+        summaryEl.textContent = '';
+        return;
+      }
+
+      var errors = 0;
+      var warnings = 0;
+      var html = '';
+
+      messages.forEach(function (message, index) {
+        var isError = message.severity === 2;
+        if (isError) errors++;
+        else warnings++;
+
+        var isCustom = customRules.has(message.ruleId);
+        var severityClass = isError ? 'severity-error' : 'severity-warn';
+        var ruleClass = isCustom ? 'custom' : 'builtin';
+
+        html += '<div class="result-item ' + severityClass + '" data-index="' + index + '"'
+          + ' data-line="' + message.line + '" data-col="' + message.column + '">'
+          + '<span class="result-location">' + message.line + ':' + message.column + '</span>'
+          + '<span class="result-message">' + escapeHtml(message.message) + '</span>'
+          + '<span class="result-rule ' + ruleClass + '">' + escapeHtml(message.ruleId || '') + '</span>'
+          + '</div>';
+      });
+
+      resultsEl.innerHTML = html;
+
+      var parts = [];
+      if (errors) parts.push('<span class="errors">' + errors + ' error' + (errors === 1 ? '' : 's') + '</span>');
+      if (warnings) parts.push('<span class="warnings">' + warnings + ' warning' + (warnings === 1 ? '' : 's') + '</span>');
+      summaryEl.innerHTML = parts.join(', ');
+    }
+
+    // Click a result to jump to that line in the editor
+    resultsEl.addEventListener('click', function (event) {
+      var item = event.target.closest('.result-item');
+      if (!item) return;
+      var line = parseInt(item.dataset.line, 10);
+      var col = parseInt(item.dataset.col, 10);
+      editor.revealLineInCenter(line);
+      editor.setPosition({ lineNumber: line, column: col });
+      editor.focus();
+    });
+
+    function escapeHtml(text) {
+      var div = document.createElement('div');
+      div.appendChild(document.createTextNode(text));
+      return div.innerHTML;
+    }
+
+    editor.onDidChangeModelContent(function () {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(lint, 200);
+    });
+
+    configSelect.addEventListener('change', function () {
+      updateRuleCount();
+      lint();
+    });
+
+    // Respond to system theme changes
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (event) {
+      if (!document.documentElement.getAttribute('data-theme')) {
+        monaco.editor.setTheme(event.matches ? 'vs-dark' : 'vs');
+      }
+    });
+
+    updateRuleCount();
+    lint();
+  });
+})();
+</script>
+</body>
+</html>
