@@ -23,7 +23,7 @@
     "selector-class-pattern": [
       "^(?:-?[a-z0-9](?:[a-z0-9]|-(?!-))*|[a-z0-9]+(?:-[a-z0-9]+)*(?:__[a-z0-9]+(?:-[a-z0-9]+)*)?(?:--[a-z0-9]+(?:-[a-z0-9]+)*)?)$",
       {
-        "message": "Class names must be lowercase alphanumeric with hyphens (no consecutive hyphens), or strict BEM (block__element--modifier, single element/modifier only)",
+        "message": "Class names must be kebab-case (e.g. block-element), or strict BEM (block__element--modifier) with at most one __element and one --modifier, in that order",
         "severity": "warning"
       }
     ],
