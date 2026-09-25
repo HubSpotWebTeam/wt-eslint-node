@@ -1,15 +1,19 @@
 import { Linter } from 'eslint/universal';
 import jsPlugin from '@eslint/js';
 import { hsWebTeamPlugin } from '../plugins/hs-web-team/index.js';
-import { nodeBaseRules, browserBaseRules } from '../base-rules.js';
+import { nodeBaseRules, browserBaseRules, nodeGlobals, browserGlobals } from '../base-rules.js';
 
 const linter = new Linter();
 const jsRecommendedRules = { rules: jsPlugin.configs.recommended.rules };
 const customRecommended = hsWebTeamPlugin.configs.recommended;
 
 const configs = {
-  node: [jsRecommendedRules, customRecommended, { rules: nodeBaseRules }],
-  browser: [jsRecommendedRules, customRecommended, { rules: browserBaseRules }],
+  node: [jsRecommendedRules, customRecommended, { languageOptions: { globals: nodeGlobals }, rules: nodeBaseRules }],
+  browser: [
+    jsRecommendedRules,
+    customRecommended,
+    { languageOptions: { globals: browserGlobals }, rules: browserBaseRules },
+  ],
   'custom-only': [customRecommended],
 };
 

@@ -1,12 +1,11 @@
 import js from '@eslint/js';
-import globals from 'globals';
 import tseslint from 'typescript-eslint';
 import reactPlugin from 'eslint-plugin-react';
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
 import jsxA11yPlugin from 'eslint-plugin-jsx-a11y';
 import { claudeCodePlugin } from './plugins/claude-code/index.js';
 import { hsWebTeamPlugin } from './plugins/hs-web-team/index.js';
-import { underscoreDangleAllowlist, browserBaseRules as baseRules } from './base-rules.js';
+import { underscoreDangleAllowlist, browserBaseRules as baseRules, browserGlobals } from './base-rules.js';
 
 export { underscoreDangleAllowlist };
 
@@ -42,15 +41,7 @@ export default [
     languageOptions: {
       ecmaVersion: 2021,
       sourceType: 'module',
-      globals: {
-        ...globals.browser,
-        ...globals.es2021,
-        ...globals.jest,
-        // Custom browser globals from original config
-        $: true,
-        jQuery: true,
-        Invoca: true,
-      },
+      globals: browserGlobals,
       parserOptions: {
         ecmaFeatures: {
           jsx: true,
@@ -92,14 +83,7 @@ export default [
     languageOptions: {
       ecmaVersion: 2021,
       sourceType: 'module',
-      globals: {
-        ...globals.browser,
-        ...globals.es2021,
-        ...globals.jest,
-        $: true,
-        jQuery: true,
-        Invoca: true,
-      },
+      globals: browserGlobals,
       parserOptions: {
         ecmaFeatures: {
           jsx: true,

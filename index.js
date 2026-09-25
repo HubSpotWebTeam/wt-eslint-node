@@ -1,9 +1,8 @@
 import js from '@eslint/js';
-import globals from 'globals';
 import tseslint from 'typescript-eslint';
 import { claudeCodePlugin } from './plugins/claude-code/index.js';
 import { hsWebTeamPlugin } from './plugins/hs-web-team/index.js';
-import { nodeBaseRules as baseRules } from './base-rules.js';
+import { nodeBaseRules as baseRules, nodeGlobals } from './base-rules.js';
 
 // Common ignore patterns
 const commonIgnores = ['**/node_modules/**', '**/.serverless/**', '**/.webpack/**', '**/dist/**'];
@@ -19,7 +18,7 @@ export default [
   {
     files: ['**/*.{js,mjs,cjs}'],
     languageOptions: {
-      globals: { ...globals.node, ...globals.es2022, ...globals.jest },
+      globals: nodeGlobals,
     },
     rules: baseRules,
   },
@@ -32,7 +31,7 @@ export default [
   {
     files: ['**/*.{ts,mts,cts,tsx}'],
     languageOptions: {
-      globals: { ...globals.node, ...globals.es2022, ...globals.jest },
+      globals: nodeGlobals,
     },
     rules: baseRules,
   },

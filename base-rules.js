@@ -1,8 +1,21 @@
+import globals from 'globals';
+
 // Underscore-prefixed HubSpot platform globals (e.g. window._hsq, window._hsg.__ip_lookup).
 // Exported so consuming projects can extend this list with their own no-underscore-dangle
 // allowances without duplicating the shared entries, e.g.:
 //   allow: [...underscoreDangleAllowlist, 'myProjectGlobal']
 export const underscoreDangleAllowlist = ['_hsg', '_hsp', '_hsq', '__ip_lookup'];
+
+export const nodeGlobals = { ...globals.node, ...globals.es2022, ...globals.jest };
+
+export const browserGlobals = {
+  ...globals.browser,
+  ...globals.es2021,
+  ...globals.jest,
+  $: true,
+  jQuery: true,
+  Invoca: true,
+};
 
 export const nodeBaseRules = {
   'no-console': ['error', { allow: ['info', 'warn', 'error'] }],
