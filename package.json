@@ -5,6 +5,7 @@
   "files": [
     ".prettierrc.json",
     ".stylelintrc.json",
+    "base-rules.js",
     "bin/",
     "browser.js",
     "cypress.config.cjs",
@@ -50,6 +51,7 @@
     "postinstall": "node bin/check-peer-deps.cjs",
     "lint": "npx eslint . --fix",
     "test": "node --test",
+    "playground:build": "node playground/build.js",
     "prepare": "git rev-parse --git-dir > /dev/null 2>&1 && git config core.hooksPath .githooks || true"
   },
   "engines": {

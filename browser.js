@@ -1,55 +1,13 @@
 import js from '@eslint/js';
-import globals from 'globals';
 import tseslint from 'typescript-eslint';
 import reactPlugin from 'eslint-plugin-react';
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
 import jsxA11yPlugin from 'eslint-plugin-jsx-a11y';
 import { claudeCodePlugin } from './plugins/claude-code/index.js';
 import { hsWebTeamPlugin } from './plugins/hs-web-team/index.js';
+import { underscoreDangleAllowlist, browserBaseRules as baseRules, browserGlobals } from './base-rules.js';
 
-// Underscore-prefixed HubSpot platform globals (e.g. window._hsq, window._hsg.__ip_lookup).
-// Exported so consuming projects can extend this list with their own no-underscore-dangle
-// allowances without duplicating the shared entries, e.g.:
-//   allow: [...underscoreDangleAllowlist, 'myProjectGlobal']
-export const underscoreDangleAllowlist = [
-  '_hsg',
-  '_hsp',
-  '_hsq',
-  '__ip_lookup',
-];
-
-// Base rules adapted from the browser config
-const baseRules = {
-  'comma-dangle': ['warn', 'always-multiline'],
-  'no-param-reassign': ['warn', { props: false }],
-  'arrow-parens': 0,
-  'no-plusplus': 0,
-  'no-console': ['error', { allow: ['warn', 'error'] }],
-  'no-confusing-arrow': 0,
-  'no-underscore-dangle': [
-    'error',
-    {
-      allow: underscoreDangleAllowlist,
-    },
-  ],
-  'no-trailing-spaces': ['error', { skipBlankLines: true }],
-  'no-unused-expressions': ['warn', { allowTernary: true }],
-  'max-len': [
-    2,
-    {
-      code: 120,
-      ignoreStrings: true,
-      ignoreTemplateLiterals: true,
-    },
-  ],
-  'operator-linebreak': 0,
-  'implicit-arrow-linebreak': 0,
-  indent: 0,
-  'object-curly-newline': 0,
-  'function-paren-newline': 0,
-  'nonblock-statement-body-position': 0,
-  'max-params': ['warn', { max: 3 }],
-};
+export { underscoreDangleAllowlist };
 
 // React-specific rules
 const reactRules = {
@@ -68,13 +26,7 @@ const reactRules = {
 };
 
 // Common ignore patterns
-const commonIgnores = [
-  '**/node_modules/**',
-  '**/dist/**',
-  '**/build/**',
-  '**/.next/**',
-  '**/coverage/**',
-];
+const commonIgnores = ['**/node_modules/**', '**/dist/**', '**/build/**', '**/.next/**', '**/coverage/**'];
 
 export default [
   // Global ignores
@@ -89,15 +41,7 @@ export default [
     languageOptions: {
       ecmaVersion: 2021,
       sourceType: 'module',
-      globals: {
-        ...globals.browser,
-        ...globals.es2021,
-        ...globals.jest,
-        // Custom browser globals from original config
-        $: true,
-        jQuery: true,
-        Invoca: true,
-      },
+      globals: browserGlobals,
       parserOptions: {
         ecmaFeatures: {
           jsx: true,
@@ -139,14 +83,7 @@ export default [
     languageOptions: {
       ecmaVersion: 2021,
       sourceType: 'module',
-      globals: {
-        ...globals.browser,
-        ...globals.es2021,
-        ...globals.jest,
-        $: true,
-        jQuery: true,
-        Invoca: true,
-      },
+      globals: browserGlobals,
       parserOptions: {
         ecmaFeatures: {
           jsx: true,
