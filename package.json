@@ -129,5 +129,10 @@
     "cypress": {
       "optional": true
     }
+  },
+  "devDependencies": {
+    "stylelint": "17.15.0",
+    "stylelint-config-standard-scss": "17.0.0",
+    "stylelint-declaration-strict-value": "1.12.1"
   }
 }
