@@ -1,5 +1,15 @@
 # Changelog
 
+## [5.1.0](https://github.com/HubSpotWebTeam/wt-eslint-node/compare/v5.0.0...v5.1.0) (2026-09-29)
+
+
+### Features
+
+* add __ip_lookup and _hsp to browser no-underscore-dangle allowlist ([#69](https://github.com/HubSpotWebTeam/wt-eslint-node/issues/69)) ([1ac4cba](https://github.com/HubSpotWebTeam/wt-eslint-node/commit/1ac4cbab3e6c2c3e005f60be765787f4194ac7ee))
+* add gherkin tag lint and coverage bins ([31b6a7d](https://github.com/HubSpotWebTeam/wt-eslint-node/commit/31b6a7d1e20b82c8094e6490bb679e3dd5a91803))
+* add hs-web-team/no-non-literal-constant-case rule ([#73](https://github.com/HubSpotWebTeam/wt-eslint-node/issues/73)) ([6c84c48](https://github.com/HubSpotWebTeam/wt-eslint-node/commit/6c84c48d2d89a8c08d237836d7789e23241ae01f))
+* allow strict BEM in selector-class-pattern ([#75](https://github.com/HubSpotWebTeam/wt-eslint-node/issues/75)) ([6cf49f9](https://github.com/HubSpotWebTeam/wt-eslint-node/commit/6cf49f9983fd8979cc28b17b9e97125bcc3d391a))
+
 ## [5.0.0](https://github.com/HubSpotWebTeam/wt-eslint-node/compare/v4.2.2...v5.0.0) (2026-09-02)
 
 
