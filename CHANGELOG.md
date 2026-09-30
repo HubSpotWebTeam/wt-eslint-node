@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.1.1](https://github.com/HubSpotWebTeam/wt-eslint-node/compare/v5.1.0...v5.1.1) (2026-09-29)
+
+
+### Bug Fixes
+
+* loosen cypress and cucumber-preprocessor peer dependency ranges ([#76](https://github.com/HubSpotWebTeam/wt-eslint-node/issues/76)) ([069f571](https://github.com/HubSpotWebTeam/wt-eslint-node/commit/069f571d975e11e3401a0d1094a141cb6ce1862c))
+
 ## [5.1.0](https://github.com/HubSpotWebTeam/wt-eslint-node/compare/v5.0.0...v5.1.0) (2026-09-29)
 
 
