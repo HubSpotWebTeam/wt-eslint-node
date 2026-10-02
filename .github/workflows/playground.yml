@@ -1,0 +1,102 @@
+name: Playground
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, closed]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: playground-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  playground:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.action == 'closed' && 'main' || '' }}
+
+      - uses: actions/setup-node@v6
+        if: github.event.action != 'closed'
+        with:
+          node-version: 24
+
+      - if: github.event.action != 'closed'
+        run: npm install
+
+      - name: Build playground
+        if: github.event.action != 'closed'
+        run: node playground/build.js
+
+      - name: Update gh-pages
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          IS_CLEANUP: ${{ github.event.action == 'closed' }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          DEPLOY_DIR="pr/${PR_NUMBER}"
+
+          if [ "$IS_CLEANUP" = "true" ]; then
+            git fetch origin gh-pages 2>/dev/null || exit 0
+            git checkout gh-pages
+            [ -d "$DEPLOY_DIR" ] || exit 0
+            git rm -rf "$DEPLOY_DIR"
+          else
+            BUILD=$(mktemp -d)
+            cp -r playground/dist/* "$BUILD/"
+
+            # -f discards the working tree (npm install can leave package-lock.json
+            # modified, which otherwise blocks the checkout).
+            git fetch origin gh-pages 2>/dev/null && git checkout -f gh-pages || {
+              git checkout --orphan gh-pages
+              git rm -rf .
+            }
+
+            mkdir -p "$DEPLOY_DIR"
+            cp -r "$BUILD/." "$DEPLOY_DIR/"
+            git add "$DEPLOY_DIR"
+          fi
+
+          git diff --cached --quiet && exit 0
+          ACTION=$( [ "$IS_CLEANUP" = "true" ] && echo "Remove" || echo "Deploy" )
+          git commit -m "${ACTION} playground for PR #${PR_NUMBER}"
+
+          # Other PRs push to the same branch concurrently but only ever touch
+          # their own pr/<n> dir, so rebasing onto the latest tip is conflict-free.
+          for attempt in 1 2 3 4 5; do
+            git push origin gh-pages && exit 0
+            git fetch origin gh-pages
+            git rebase origin/gh-pages || { git rebase --abort; break; }
+            sleep $((RANDOM % 5 + 1))
+          done
+
+          echo "Failed to push to gh-pages after 5 attempts" >&2
+          exit 1
+
+      - name: Comment on PR
+        if: github.event.action != 'closed'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const prNumber = context.payload.pull_request.number;
+            const url = `https://${owner}.github.io/${repo}/pr/${prNumber}/`;
+            const body = `**[ESLint Playground](${url})** — test the rules from this PR in your browser`;
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner, repo, issue_number: prNumber,
+            });
+            const existing = comments.find(c =>
+              c.user.login === 'github-actions[bot]' && c.body.includes('ESLint Playground')
+            );
+
+            await (existing
+              ? github.rest.issues.updateComment({ owner, repo, comment_id: existing.id, body })
+              : github.rest.issues.createComment({ owner, repo, issue_number: prNumber, body }));
