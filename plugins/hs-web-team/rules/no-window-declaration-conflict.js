@@ -1,6 +1,6 @@
-// Point-in-time result of an org-wide code search across HubSpotMarketingWebTeam
-// (see PR history), not a live registry. Re-auditing for new or resolved entries
-// is a manual, occasional exercise — not something CI enforces.
+// Point-in-time result of an org-wide code search across HubSpotMarketingWebTeam,
+// not a live registry. Re-auditing for new or resolved entries is a manual,
+// occasional exercise that CI does not enforce.
 const DEFAULT_DENYLIST = new Set(['_hsg', '_hsq', '_hsp', 'dataLayer', 'hbspt']);
 
 /**
