@@ -180,6 +180,17 @@ This package includes a shared accessibility testing setup using [cypress-axe](h
 
 `cy.checkAccessibility()` adds the `high-contrast` class to `body`, runs WCAG 2.2 Level AA rules only, and logs each violation with its id, help text, impact, element targets, and help URL. TypeScript types are included — no `tsconfig.json` changes required.
 
+## Cloudflare 429 handling (optional, Cucumber suites)
+
+For Cypress + Cucumber suites hitting Cloudflare-fronted endpoints, opt in to shared handling of Cloudflare `429` rate-limit responses: stop retrying a 429'd test, skip the rest of a Scenario Outline whose example 429'd, and tag the failure with a `[RATE-LIMIT-429]` marker. Add one import inside your `stepDefinitions` glob (not `support/e2e.js`):
+
+```js
+// cypress/support/step_definitions/rate-limit-429.js  (or .ts)
+import '@hs-web-team/eslint-config-node/cypress/rate-limit-429';
+```
+
+For how it works and how to verify it with a mocked 429, see [examples/cypress-usage.md](./examples/cypress-usage.md#cloudflare-429-handling-cucumber-suites).
+
 ## Custom Rules
 
 This package ships a `hs-web-team` ESLint plugin with custom rules that are active automatically when you use `wtConfig` or `wtBrowserConfig` — no extra setup needed.
@@ -200,6 +211,7 @@ This package provides multiple configurations:
 - **Stylelint configuration** (`.stylelintrc.json` export): For SCSS/CSS linting
 - **Cypress configuration** (`cypress.config` export): For E2E testing with Cypress
 - **Accessibility testing** (`/cypress` export): Opt-in cypress-axe setup with WCAG 2.2 AA checks
+- **Cloudflare 429 handling** (`/cypress/rate-limit-429` export): Opt-in Cucumber handling of rate-limit 429s
 - **Prettier configuration** (`.prettierrc.json` export): For code formatting
 
 Choose the appropriate configurations based on your project needs.

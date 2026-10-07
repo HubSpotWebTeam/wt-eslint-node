@@ -33,6 +33,10 @@
       "types": "./cypress/index.d.ts",
       "default": "./cypress/index.js"
     },
+    "./cypress/rate-limit-429": {
+      "types": "./cypress/rate-limit-429.d.ts",
+      "default": "./cypress/rate-limit-429.js"
+    },
     "./plugin": "./plugins/hs-web-team/index.js",
     "./gherkin/.gplintrc": "./gherkin/.gplintrc",
     "./gherkin/coverage-config": "./gherkin/coverage-config.js"
@@ -44,6 +48,9 @@
       ],
       "cypress": [
         "./cypress/index.d.ts"
+      ],
+      "cypress/rate-limit-429": [
+        "./cypress/rate-limit-429.d.ts"
       ]
     }
   },
