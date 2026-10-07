@@ -115,6 +115,59 @@ regression:
       url: https://prod.example.com
 ```
 
+## Cloudflare 429 handling (Cucumber suites)
+
+For Cypress + Cucumber suites that hit Cloudflare-fronted endpoints, this package ships an
+opt-in handler for Cloudflare `429` rate-limit responses. A Cloudflare 429 is a ~10-minute
+IP block, so a retry can't pass — it just burns the limited request budget. The handler:
+
+- **Stops retrying** a test that fails on a Cloudflare 429 (it still fails once; every other
+  failure retries per your `retries` config, and sibling tests are unaffected).
+- **Skips the remaining examples of a Scenario Outline** once one example hits a 429 — the
+  other rows target the same blocked endpoint, so they're marked pending instead of run.
+- **Tags the failure** with a searchable `[RATE-LIMIT-429]` marker (timestamp, URL, `cf-ray`)
+  on the test error, without ever throwing from the hook.
+
+Detection is gated on Cloudflare's `cf-ray` response header, so unrelated third-party 429s
+(pixels, analytics, etc.) don't trigger it.
+
+### Enabling it
+
+Add **one file inside your `stepDefinitions` glob** (commonly
+`cypress/support/step_definitions/`). JavaScript projects name it `.js`, TypeScript projects
+name it `.ts` — the contents are identical:
+
+```js
+// cypress/support/step_definitions/rate-limit-429.js  (or .ts)
+import '@hs-web-team/eslint-config-node/cypress/rate-limit-429';
+```
+
+That single side-effect import registers everything. No config, `setupNodeEvents`, or
+dependency changes are needed — `@badeball/cypress-cucumber-preprocessor` is already a peer
+dependency your suite satisfies.
+
+> **It must live in a step-definitions file, not `cypress/support/e2e.js`.** The handler
+> registers a Cucumber `Before` hook (for the outline-skip), and the preprocessor only exposes
+> its hook registry while bundling step-definition files. Importing from the support file
+> throws `Expected to find a global registry ...`.
+
+### Verifying it with a mocked 429
+
+Real Cloudflare 429s are intermittent, so to confirm the handler fires, force one in a
+throwaway/smoke spec with a **dynamic-reply** intercept — point it at a request the page
+actually makes (a browser `fetch`/XHR, not `cy.request`):
+
+```js
+cy.intercept('GET', '**/your-endpoint', req =>
+  req.reply({ statusCode: 429, headers: { 'cf-ray': 'mock-cf-ray-123' } }),
+);
+```
+
+The handler's `**/*` middleware intercept runs first and observes the response, so the test
+fails once (no retry), carries the `[RATE-LIMIT-429]` marker, and — in a Scenario Outline —
+the remaining examples are skipped. Use a dynamic `req.reply(...)`, not a static stub object:
+a static stub doesn't reliably drive the response lifecycle the middleware observes.
+
 ## Customizing Configuration
 
 ### Add Custom setupNodeEvents
