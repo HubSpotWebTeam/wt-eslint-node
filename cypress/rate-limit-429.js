@@ -1,21 +1,13 @@
 import { Before } from '@badeball/cypress-cucumber-preprocessor';
 
-// All Cloudflare-429 handling lives in this one file so the three hooks can share plain
-// module state. Consumers import it (side-effect only) from a file inside their
-// `stepDefinitions` glob:
+// All Cloudflare-429 handling lives in one file so the three hooks share plain module state.
+// Usage & setup: see examples/cypress-usage.md. In short: import this (side-effect only) from a
+// file in your `stepDefinitions` glob, NOT the support file — the cucumber Before() hook
+// (outline-skip) only registers against the step-def bundle's global registry, so importing from
+// support/e2e.js throws "Expected to find a global registry ...".
 //
-//   import '@hs-web-team/eslint-config-node/cypress/rate-limit-429';
-//
-// It MUST be imported from a step-definitions file, never the support file: the cucumber
-// Before() hook (used to skip a Scenario Outline's remaining examples) registers against a
-// global registry that only exists while step-definition files are bundled. Importing from
-// support/e2e.js throws "Expected to find a global registry ...". Detection and marking use
-// Mocha's global beforeEach/afterEach, which are allowed in any bundled file, so keeping all
-// three in one module means a single import wires up everything.
-//
-// Using Mocha's afterEach (NOT cucumber After()) is deliberate: the cucumber preprocessor's
-// After() does NOT run when a scenario fails, and a 429 fails the scenario, so After() could
-// never react to it.
+// Using Mocha's afterEach (NOT cucumber After()) is deliberate: the preprocessor's After() does
+// NOT run when a scenario fails, and a 429 fails the scenario, so After() could never react to it.
 // https://github.com/badeball/cypress-cucumber-preprocessor/blob/master/docs/cucumber-basics.md#hooks
 
 /** @typedef {{ url: string, ray: string | string[], at: string }} RateLimit429Hit */
