@@ -38,6 +38,9 @@ const getRootDir = currDir => {
  *   or `null` if this is not the dev environment or no such property exists.
  */
 const getDevBaseUrl = () => {
+  // Skip the DEV portal lookup in CI; Jenkins runs as `jenkins_lt`.
+  if (process.env.LT_USERNAME === 'jenkins_lt') return null;
+
   try {
     const root = getRootDir(__dirname);
     if (!root) return null;
