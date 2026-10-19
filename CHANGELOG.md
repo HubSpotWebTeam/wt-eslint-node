@@ -1,5 +1,18 @@
 # Changelog
 
+## [5.2.0](https://github.com/HubSpotWebTeam/wt-eslint-node/compare/v5.1.1...v5.2.0) (2026-10-19)
+
+
+### Features
+
+* add opt-in Cloudflare 429 handling for Cypress+Cucumber suites ([fd55628](https://github.com/HubSpotWebTeam/wt-eslint-node/commit/fd556282ef67a7f32ae77f67a09c15dfe98fc93b))
+* add opt-in Cloudflare 429 handling for Cypress+Cucumber suites ([946c93c](https://github.com/HubSpotWebTeam/wt-eslint-node/commit/946c93c309e2d4ca12c020e72f5deec415a62b5a))
+
+
+### Bug Fixes
+
+* skip DEV baseUrl lookup for Jenkins CI to drop hubspot.config.yml noise ([c8cc74e](https://github.com/HubSpotWebTeam/wt-eslint-node/commit/c8cc74ed54d67757b34294865abf6d88bca81a93))
+
 ## [5.1.1](https://github.com/HubSpotWebTeam/wt-eslint-node/compare/v5.1.0...v5.1.1) (2026-09-29)
 
 
