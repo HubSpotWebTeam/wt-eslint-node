@@ -1,5 +1,17 @@
 const DEFAULT_EXCEPTIONS = new Set(['e', '_']);
 const DEFAULT_MIN_LENGTH = 2;
+const DEFAULT_DISALLOWED_NAMES = new Set([
+  'cfg',
+  'btn',
+  'msg',
+  'tmp',
+  'idx',
+  'val',
+  'str',
+  'obj',
+  'arr',
+  'evt',
+]);
 
 const SORT_METHODS = new Set(['sort', 'toSorted']);
 const ARRAY_ITERATION_METHODS = new Set([
@@ -66,6 +78,7 @@ export const noAbbreviations = {
     messages: {
       tooShort:
         'Identifier "{{name}}" is too short ({{length}} < {{min}}). Use a descriptive name.',
+      disallowed: 'Identifier "{{name}}" is a known abbreviation. Use a descriptive name.',
     },
     schema: [
       {
@@ -73,6 +86,7 @@ export const noAbbreviations = {
         properties: {
           exceptions: { type: 'array', items: { type: 'string' }, uniqueItems: true },
           minLength: { type: 'integer', minimum: 1 },
+          disallowedNames: { type: 'array', items: { type: 'string' }, uniqueItems: true },
         },
         additionalProperties: false,
       },
@@ -83,13 +97,17 @@ export const noAbbreviations = {
     const options = context.options[0] ?? {};
     const exceptions = new Set([...DEFAULT_EXCEPTIONS, ...(options.exceptions ?? [])]);
     const minLength = options.minLength ?? DEFAULT_MIN_LENGTH;
+    const disallowedNames = new Set([
+      ...DEFAULT_DISALLOWED_NAMES,
+      ...(options.disallowedNames ?? []),
+    ]);
 
     return {
       Identifier(node) {
         const { name, parent } = node;
 
-        if (name.length >= minLength) return;
         if (exceptions.has(name)) return;
+        if ((name.length >= minLength) && !disallowedNames.has(name)) return;
 
         // Only flag declaration sites — not usage sites.
         //
@@ -124,11 +142,16 @@ export const noAbbreviations = {
           isCallbackToMethod(parent, ARRAY_ITERATION_METHODS)
         ) return;
 
-        context.report({
-          node,
-          messageId: 'tooShort',
-          data: { name, length: name.length, min: minLength },
-        });
+        if (name.length < minLength) {
+          context.report({
+            node,
+            messageId: 'tooShort',
+            data: { name, length: name.length, min: minLength },
+          });
+          return;
+        }
+
+        context.report({ node, messageId: 'disallowed', data: { name } });
       },
     };
   },
