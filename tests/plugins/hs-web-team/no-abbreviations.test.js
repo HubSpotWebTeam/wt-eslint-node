@@ -104,6 +104,59 @@ describe('no-abbreviations', () => {
     });
   });
 
+  describe('disallowedNames', () => {
+    it('does not flag cfg at usage sites or when listed in exceptions', () => {
+      ruleTester.run('no-abbreviations', rule, {
+        valid: [
+          { code: 'doThing(cfg);' },
+          { code: 'const config = obj.cfg;' },
+          { code: 'const cfg = {};', options: [{ exceptions: ['cfg'] }] },
+        ],
+        invalid: [],
+      });
+    });
+
+    it('flags cfg by default at declaration sites', () => {
+      ruleTester.run('no-abbreviations', rule, {
+        valid: [],
+        invalid: [
+          { code: 'const cfg = {};', errors: [{ messageId: 'disallowed', data: { name: 'cfg' } }] },
+          { code: 'function load(cfg) {}', errors: [{ messageId: 'disallowed' }] },
+          { code: 'const load = cfg => cfg;', errors: [{ messageId: 'disallowed' }] },
+        ],
+      });
+    });
+
+    it('flags every default disallowed name', () => {
+      const names = ['cfg', 'btn', 'msg', 'tmp', 'idx', 'val', 'str', 'obj', 'arr', 'evt'];
+      ruleTester.run('no-abbreviations', rule, {
+        valid: [],
+        invalid: names.map(name => ({
+          code: `const ${name} = 1;`,
+          errors: [{ messageId: 'disallowed', data: { name } }],
+        })),
+      });
+    });
+
+    it('flags custom disallowed names in addition to the defaults', () => {
+      ruleTester.run('no-abbreviations', rule, {
+        valid: [],
+        invalid: [
+          {
+            code: 'const usr = "hi";',
+            options: [{ disallowedNames: ['usr'] }],
+            errors: [{ messageId: 'disallowed', data: { name: 'usr' } }],
+          },
+          {
+            code: 'const cfg = {};',
+            options: [{ disallowedNames: ['msg'] }],
+            errors: [{ messageId: 'disallowed' }],
+          },
+        ],
+      });
+    });
+  });
+
   describe('invalid', () => {
     it('flags a single-char array destructuring binding', () => {
       ruleTester.run('no-abbreviations', rule, {
