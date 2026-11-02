@@ -131,6 +131,12 @@ IP block, so a retry can't pass — it just burns the limited request budget. Th
 Detection is gated on Cloudflare's `cf-ray` response header, so unrelated third-party 429s
 (pixels, analytics, etc.) don't trigger it.
 
+The handler only observes `document`, `fetch`, and `xhr` responses. Cypress buffers the full
+body of every intercepted response and sends it to the driver over Chrome DevTools, so
+observing large media (audio/video range requests) can overflow Chrome's 100 MB DevTools
+buffer and hang the run. A Cloudflare 429 blocks the whole IP, so the page load or API call is
+what sees it anyway.
+
 ### Enabling it
 
 Add **one file inside your `stepDefinitions` glob** (commonly
@@ -155,7 +161,8 @@ dependency your suite satisfies.
 
 Real Cloudflare 429s are intermittent, so to confirm the handler fires, force one in a
 throwaway/smoke spec with a **dynamic-reply** intercept — point it at a request the page
-actually makes (a browser `fetch`/XHR, not `cy.request`):
+actually makes (a page load or browser `fetch`/XHR, not `cy.request` or an image/script/media
+asset, which the handler doesn't observe):
 
 ```js
 cy.intercept('GET', '**/your-endpoint', req =>
@@ -163,7 +170,7 @@ cy.intercept('GET', '**/your-endpoint', req =>
 );
 ```
 
-The handler's `**/*` middleware intercept runs first and observes the response, so the test
+The handler's middleware intercept runs first and observes the response, so the test
 fails once (no retry), carries the `[RATE-LIMIT-429]` marker, and — in a Scenario Outline —
 the remaining examples are skipped. Use a dynamic `req.reply(...)`, not a static stub object:
 a static stub doesn't reliably drive the response lifecycle the middleware observes.

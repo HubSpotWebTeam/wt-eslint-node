@@ -41,11 +41,18 @@ const disableRetriesForCurrentTest = () => {
 beforeEach(() => {
   rateLimit429Hit = null; // to ensure each scenario starts clean, in case a previous afterEach was skipped
 
-  // Observe every response (middleware:true never modifies). Genuine Cloudflare 429s
-  // carry a cf-ray header; third-party 429s (Google c2dm, pixels, etc.) don't, so ignore
+  // Observe page-load and API responses (middleware:true never modifies). Genuine Cloudflare
+  // 429s carry a cf-ray header; third-party 429s (Google c2dm, pixels, etc.) don't, so ignore
   // those — otherwise we'd wrongly disable retries / skip an outline. Gate on the header,
   // not the host, since the suite may hit several Cloudflare-fronted hosts.
-  cy.intercept({ url: '**/*', middleware: true }, req => {
+  //
+  // resourceType is restricted on purpose: Cypress buffers the FULL body of every matched
+  // response and ships it to the driver over CDP. Media (MP3/MP4 range requests, resourceType
+  // 'other') can overflow Chrome's 100 MB DevTools buffer, which drops the CDP connection and
+  // hangs the run with no failure. A Cloudflare 429 blocks the whole IP, so the page load
+  // (document) and API calls (fetch/xhr) are what see it — those are all we need to observe.
+  // Filtering by resource type (not host) keeps the handler host-agnostic.
+  cy.intercept({ url: '**/*', resourceType: /^(document|fetch|xhr)$/, middleware: true }, req => {
     req.on('response', res => {
       const ray = res.headers['cf-ray'];
       if (res.statusCode === 429 && ray) {
