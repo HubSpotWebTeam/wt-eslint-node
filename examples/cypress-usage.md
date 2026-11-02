@@ -135,7 +135,12 @@ The handler only observes `document`, `fetch`, and `xhr` responses. Cypress buff
 body of every intercepted response and sends it to the driver over Chrome DevTools, so
 observing large media (audio/video range requests) can overflow Chrome's 100 MB DevTools
 buffer and hang the run. A Cloudflare 429 blocks the whole IP, so the page load or API call is
-what sees it anyway.
+what sees it anyway. It also skips URLs whose path ends in a media or download extension
+(`.mp3`, `.mp4`, `.m3u8`, `.ts`, `.pdf`, `.zip`, …), which players and scripts sometimes load
+with `fetch`/XHR. Media served without an extension is still observed.
+
+If your suite adds its own catch-all intercept (`cy.intercept('**/*', …)`), it can hit the
+same hang on media-heavy pages; scope it by `resourceType` or host the same way.
 
 ### Enabling it
 

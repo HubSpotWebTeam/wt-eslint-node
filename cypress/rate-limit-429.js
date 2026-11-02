@@ -20,6 +20,10 @@ let currentOutline = null;
 /** @type {string | null} */
 let rateLimited429Outline = null;
 
+// Matches any URL whose path does NOT end in a media/download extension (query/hash allowed).
+const NOT_MEDIA_OR_DOWNLOAD_URL =
+  /^(?![^?#]*\.(?:mp3|m4a|aac|wav|ogg|oga|opus|flac|mp4|m4v|mov|webm|mkv|m3u8|mpd|ts|m4s|pdf|zip)(?:[?#]|$))/i;
+
 // cy.state('runnable') is an internal API
 const currentRunnable = () => cy.state('runnable');
 
@@ -52,7 +56,11 @@ beforeEach(() => {
   // hangs the run with no failure. A Cloudflare 429 blocks the whole IP, so the page load
   // (document) and API calls (fetch/xhr) are what see it — those are all we need to observe.
   // Filtering by resource type (not host) keeps the handler host-agnostic.
-  cy.intercept({ url: '**/*', resourceType: /^(document|fetch|xhr)$/, middleware: true }, req => {
+  //
+  // NOT_MEDIA_OR_DOWNLOAD_URL additionally excludes media/downloads that scripts fetch via
+  // fetch/XHR (waveform audio players, HLS/DASH segments, PDFs), which resourceType alone
+  // would still let through. Best-effort: media served without an extension still matches.
+  cy.intercept({ url: NOT_MEDIA_OR_DOWNLOAD_URL, resourceType: /^(document|fetch|xhr)$/, middleware: true }, req => {
     req.on('response', res => {
       const ray = res.headers['cf-ray'];
       if (res.statusCode === 429 && ray) {
