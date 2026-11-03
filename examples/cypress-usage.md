@@ -136,9 +136,6 @@ media or download extension (`.mp3`, `.mp4`, `.m3u8`, `.pdf`, …). Cypress send
 response body to the driver, and large media can overflow Chrome's 100 MB DevTools buffer and
 hang the run. A Cloudflare 429 blocks the whole IP, so page loads and API calls still catch it.
 
-Your own catch-all `cy.intercept('**/*', …)` can cause the same hang on media-heavy pages;
-scope it by `resourceType` or host.
-
 ### Enabling it
 
 Add **one file inside your `stepDefinitions` glob** (commonly
@@ -163,8 +160,7 @@ dependency your suite satisfies.
 
 Real Cloudflare 429s are intermittent, so to confirm the handler fires, force one in a
 throwaway/smoke spec with a **dynamic-reply** intercept — point it at a request the page
-actually makes (a page load or browser `fetch`/XHR, not `cy.request` or an image/script/media
-asset, which the handler doesn't observe):
+actually makes (a page load or browser `fetch`/XHR, not `cy.request` or a static asset):
 
 ```js
 cy.intercept('GET', '**/your-endpoint', req =>

@@ -20,7 +20,7 @@ let currentOutline = null;
 /** @type {string | null} */
 let rateLimited429Outline = null;
 
-// Matches any URL whose path does NOT end in a media/download extension (query/hash allowed).
+// URLs whose path doesn't end in a media/download extension; skips media that scripts fetch (best-effort).
 const NOT_MEDIA_OR_DOWNLOAD_URL =
   /^(?![^?#]*\.(?:mp3|m4a|aac|wav|ogg|oga|opus|flac|mp4|m4v|mov|webm|mkv|m3u8|mpd|ts|m4s|pdf|zip)(?:[?#]|$))/i;
 
@@ -45,15 +45,14 @@ const disableRetriesForCurrentTest = () => {
 beforeEach(() => {
   rateLimit429Hit = null; // to ensure each scenario starts clean, in case a previous afterEach was skipped
 
-  // Observe page-load and API responses (middleware:true never modifies). Genuine Cloudflare
-  // 429s carry a cf-ray header; third-party 429s (Google c2dm, pixels, etc.) don't, so ignore
+  // Observe responses (middleware:true never modifies). Genuine Cloudflare 429s
+  // carry a cf-ray header; third-party 429s (Google c2dm, pixels, etc.) don't, so ignore
   // those — otherwise we'd wrongly disable retries / skip an outline. Gate on the header,
   // not the host, since the suite may hit several Cloudflare-fronted hosts.
   //
   // Only document/fetch/xhr: Cypress sends each matched response body to the driver over CDP,
   // and large media bodies overflow Chrome's 100 MB buffer and hang the run. A Cloudflare 429
   // blocks the whole IP, so page loads and API calls still see it.
-  // NOT_MEDIA_OR_DOWNLOAD_URL also skips media that scripts fetch (best-effort, by extension).
   cy.intercept({ url: NOT_MEDIA_OR_DOWNLOAD_URL, resourceType: /^(document|fetch|xhr)$/, middleware: true }, req => {
     req.on('response', res => {
       const ray = res.headers['cf-ray'];
