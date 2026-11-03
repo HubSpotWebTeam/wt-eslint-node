@@ -131,16 +131,13 @@ IP block, so a retry can't pass — it just burns the limited request budget. Th
 Detection is gated on Cloudflare's `cf-ray` response header, so unrelated third-party 429s
 (pixels, analytics, etc.) don't trigger it.
 
-The handler only observes `document`, `fetch`, and `xhr` responses. Cypress buffers the full
-body of every intercepted response and sends it to the driver over Chrome DevTools, so
-observing large media (audio/video range requests) can overflow Chrome's 100 MB DevTools
-buffer and hang the run. A Cloudflare 429 blocks the whole IP, so the page load or API call is
-what sees it anyway. It also skips URLs whose path ends in a media or download extension
-(`.mp3`, `.mp4`, `.m3u8`, `.ts`, `.pdf`, `.zip`, …), which players and scripts sometimes load
-with `fetch`/XHR. Media served without an extension is still observed.
+The handler only watches `document`, `fetch` and `xhr` responses, and skips URLs ending in a
+media or download extension (`.mp3`, `.mp4`, `.m3u8`, `.pdf`, …). Cypress sends every watched
+response body to the driver, and large media can overflow Chrome's 100 MB DevTools buffer and
+hang the run. A Cloudflare 429 blocks the whole IP, so page loads and API calls still catch it.
 
-If your suite adds its own catch-all intercept (`cy.intercept('**/*', …)`), it can hit the
-same hang on media-heavy pages; scope it by `resourceType` or host the same way.
+Your own catch-all `cy.intercept('**/*', …)` can cause the same hang on media-heavy pages;
+scope it by `resourceType` or host.
 
 ### Enabling it
 
