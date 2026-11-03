@@ -50,16 +50,10 @@ beforeEach(() => {
   // those — otherwise we'd wrongly disable retries / skip an outline. Gate on the header,
   // not the host, since the suite may hit several Cloudflare-fronted hosts.
   //
-  // resourceType is restricted on purpose: Cypress buffers the FULL body of every matched
-  // response and ships it to the driver over CDP. Media (MP3/MP4 range requests, resourceType
-  // 'other') can overflow Chrome's 100 MB DevTools buffer, which drops the CDP connection and
-  // hangs the run with no failure. A Cloudflare 429 blocks the whole IP, so the page load
-  // (document) and API calls (fetch/xhr) are what see it — those are all we need to observe.
-  // Filtering by resource type (not host) keeps the handler host-agnostic.
-  //
-  // NOT_MEDIA_OR_DOWNLOAD_URL additionally excludes media/downloads that scripts fetch via
-  // fetch/XHR (waveform audio players, HLS/DASH segments, PDFs), which resourceType alone
-  // would still let through. Best-effort: media served without an extension still matches.
+  // Only document/fetch/xhr: Cypress sends each matched response body to the driver over CDP,
+  // and large media bodies overflow Chrome's 100 MB buffer and hang the run. A Cloudflare 429
+  // blocks the whole IP, so page loads and API calls still see it.
+  // NOT_MEDIA_OR_DOWNLOAD_URL also skips media that scripts fetch (best-effort, by extension).
   cy.intercept({ url: NOT_MEDIA_OR_DOWNLOAD_URL, resourceType: /^(document|fetch|xhr)$/, middleware: true }, req => {
     req.on('response', res => {
       const ray = res.headers['cf-ray'];
