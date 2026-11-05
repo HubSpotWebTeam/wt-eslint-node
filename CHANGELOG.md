@@ -1,5 +1,20 @@
 # Changelog
 
+## [5.3.0](https://github.com/HubSpotWebTeam/wt-eslint-node/compare/v5.2.0...v5.3.0) (2026-11-05)
+
+
+### Features
+
+* FWA-872 move stylelint packages from peerDependencies to dependencies ([64ba109](https://github.com/HubSpotWebTeam/wt-eslint-node/commit/64ba109cf3caf1450445eab7c87bcd24fe430ac9))
+* FWA-872 Move stylelint packages from peerDependencies to dependencies ([d48bb43](https://github.com/HubSpotWebTeam/wt-eslint-node/commit/d48bb43de602298ca0b320231f9c781c8167144a))
+
+
+### Bug Fixes
+
+* limit rate-limit-429 intercept to document/fetch/xhr to avoid CDP buffer overflow ([564a2ab](https://github.com/HubSpotWebTeam/wt-eslint-node/commit/564a2ab09635bc003784cd8726a11db6942d9ac5))
+* OPS-2195 scope rate-limit-429 intercept to document/fetch/xhr and skip media URLs ([49a4708](https://github.com/HubSpotWebTeam/wt-eslint-node/commit/49a4708a1fe17eb9ceae002333f79dfd2517753f))
+* skip media/download URLs in rate-limit-429 intercept ([8d98ba3](https://github.com/HubSpotWebTeam/wt-eslint-node/commit/8d98ba32a3dbac6bd96d9e9762806d707ff2db37))
+
 ## [5.2.0](https://github.com/HubSpotWebTeam/wt-eslint-node/compare/v5.1.1...v5.2.0) (2026-10-27)
 
 
