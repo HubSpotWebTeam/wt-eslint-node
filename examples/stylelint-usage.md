@@ -7,7 +7,7 @@ This package provides a shared Stylelint configuration for SCSS/CSS linting in H
 1. Install the package and stylelint dependencies:
 
 ```bash
-npm install --save-dev @hs-web-team/eslint-config-node stylelint stylelint-config-standard-scss stylelint-declaration-strict-value
+npm install --save-dev @hs-web-team/eslint-config-node stylelint stylelint-config-standard-scss stylelint-declaration-strict-value stylelint-no-unsupported-browser-features
 ```
 
 ## Usage
@@ -87,6 +87,7 @@ The following SCSS rules are customized:
 - **color-function-notation**: Flexible color function notation
 - **media-feature-range-notation**: Set to `"context"` with warning severity
 - **value-keyword-case**: Enforces lowercase keywords with camelCase for SVG keywords
+- **plugin/no-unsupported-browser-features**: Warns on CSS features outside the [shared browserslist query](./browserslist-usage.md); partial support is ignored
 
 ## File Patterns
 
@@ -136,7 +137,7 @@ To override rules for your project, add them to your `.stylelintrc.json`:
 If you get a module not found error, ensure you have installed all dependencies:
 
 ```bash
-npm install --save-dev stylelint stylelint-config-standard-scss stylelint-declaration-strict-value
+npm install --save-dev stylelint stylelint-config-standard-scss stylelint-declaration-strict-value stylelint-no-unsupported-browser-features
 ```
 
 ### Conflicts with Prettier

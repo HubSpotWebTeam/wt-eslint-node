@@ -8,6 +8,7 @@
     "base-rules.js",
     "bin/",
     "browser.js",
+    "browserslist.js",
     "cypress.config.cjs",
     "cypress.config.d.ts",
     "cypress/",
@@ -22,6 +23,7 @@
   "exports": {
     ".": "./index.js",
     "./browser": "./browser.js",
+    "./browserslist-config": "./browserslist.js",
     "./.prettierrc.json": "./.prettierrc.json",
     "./.stylelintrc.json": "./.stylelintrc.json",
     "./cypress.config": {
@@ -96,10 +98,12 @@
     "@typescript-eslint/eslint-plugin": "^8.65.0",
     "@typescript-eslint/parser": "^8.65.0",
     "axe-core": "4.13.0",
+    "browserslist": "4.29.5",
     "cypress-axe": "1.7.0",
     "esbuild": "0.28.2",
     "eslint": "9.39.5",
     "eslint-formatter-checkstyle": "9.0.1",
+    "eslint-plugin-compat": "7.0.2",
     "eslint-plugin-jsx-a11y": "6.10.2",
     "eslint-plugin-react": "7.37.5",
     "eslint-plugin-react-hooks": "7.1.1",
@@ -114,6 +118,7 @@
     "stylelint-config-standard": "^40.0.0",
     "stylelint-config-standard-scss": "^17.0.0",
     "stylelint-declaration-strict-value": "^1.11.1",
+    "stylelint-no-unsupported-browser-features": "8.1.2",
     "typescript-eslint": "8.68.0"
   },
   "peerDependencies": {

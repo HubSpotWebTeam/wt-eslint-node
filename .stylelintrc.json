@@ -1,7 +1,15 @@
 {
   "extends": "stylelint-config-standard-scss",
-  "plugins": ["stylelint-declaration-strict-value"],
+  "plugins": ["stylelint-declaration-strict-value", "stylelint-no-unsupported-browser-features"],
   "rules": {
+    "plugin/no-unsupported-browser-features": [
+      true,
+      {
+        "browsers": ["last 1 year", "Firefox ESR"],
+        "ignorePartialSupport": true,
+        "severity": "warning"
+      }
+    ],
     "scale-unlimited/declaration-strict-value": [
       ["/color/", "fill", "stroke", "font-size", "font-weight"],
       {
