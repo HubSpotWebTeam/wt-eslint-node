@@ -209,6 +209,7 @@ This package provides multiple configurations:
 - **Node.js configuration** (default export): For backend Node.js projects
 - **Browser configuration** (`/browser` export): For browser-based projects including React applications
 - **Stylelint configuration** (`.stylelintrc.json` export): For SCSS/CSS linting
+- **Browserslist query** (`/browserslist` export): Shared browser support list for lint and build tooling, see [examples/browserslist-usage.md](./examples/browserslist-usage.md)
 - **Cypress configuration** (`cypress.config` export): For E2E testing with Cypress
 - **Accessibility testing** (`/cypress` export): Opt-in cypress-axe setup with WCAG 2.2 AA checks
 - **Cloudflare 429 handling** (`/cypress/rate-limit-429` export): Opt-in Cucumber handling of rate-limit 429s

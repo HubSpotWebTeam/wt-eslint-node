@@ -35,6 +35,7 @@ The browser configuration includes:
 - **React support** with eslint-plugin-react
 - **React Hooks** rules with eslint-plugin-react-hooks
 - **Accessibility** rules with eslint-plugin-jsx-a11y
+- **Browser compatibility** warnings with eslint-plugin-compat, using the [shared browserslist query](./browserslist-usage.md)
 - **Browser globals** (window, document, localStorage, etc.)
 - **Jest environment** for testing
 - **Custom globals**: jQuery, $, Invoca

@@ -1,0 +1,78 @@
+# Shared Browserslist Query
+
+`@hs-web-team/eslint-config-node/browserslist` exports the browser support list from the WDO [Browser Support Guidelines](https://hubspot.atlassian.net/wiki/spaces/MKT/pages/1440153616/Browser+Support+Guidelines) as a rolling browserslist query:
+
+```js
+['last 1 year', 'Firefox ESR'];
+```
+
+The query contains no version numbers. It only changes if the policy window changes. Importing it throws if the query resolves to no browsers (fully stale `caniuse-lite` data).
+
+## Lint checks
+
+The browser ESLint config and the shared Stylelint config check code against this list. No setup is needed beyond using those configs:
+
+- **ESLint** (`/browser` export): `compat/compat` from `eslint-plugin-compat` warns on JS/TS browser APIs outside the list.
+- **Stylelint** (`.stylelintrc.json` export): `plugin/no-unsupported-browser-features` warns on CSS features outside the list. Partial support is ignored.
+
+## Build tooling
+
+Pass the query to build tools that need targets.
+
+Babel (`babel.config.js`, ESM):
+
+```js
+import browserslistQuery from '@hs-web-team/eslint-config-node/browserslist';
+
+export default {
+  presets: [['@babel/preset-env', { targets: browserslistQuery }]],
+};
+```
+
+PostCSS (`postcss.config.js`, ESM):
+
+```js
+import autoprefixer from 'autoprefixer';
+import browserslistQuery from '@hs-web-team/eslint-config-node/browserslist';
+
+export default {
+  plugins: [autoprefixer({ overrideBrowserslist: browserslistQuery })],
+};
+```
+
+Projects without a JS config keep a `.browserslistrc` with the same query. Browserslist `extends` only accepts packages named `browserslist-config-*`, so it cannot reference this package:
+
+```
+last 1 year
+Firefox ESR
+```
+
+## Projects with their own browser requirements
+
+Override both lint settings locally.
+
+`eslint.config.js`:
+
+```js
+import wtBrowserConfig from '@hs-web-team/eslint-config-node/browser';
+
+export default [...wtBrowserConfig, { settings: { browsers: ['ie 11'] } }];
+```
+
+`.stylelintrc.json`:
+
+```json
+{
+  "extends": "@hs-web-team/eslint-config-node/.stylelintrc.json",
+  "rules": {
+    "plugin/no-unsupported-browser-features": [
+      true,
+      { "browsers": ["ie 11"], "ignorePartialSupport": true, "severity": "warning" }
+    ]
+  }
+}
+```
+
+## Keeping data current
+
+`caniuse-lite` data updates through normal dependency updates. Browserslist warns in builds once the data is 6 months old.

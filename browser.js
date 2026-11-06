@@ -3,6 +3,8 @@ import tseslint from 'typescript-eslint';
 import reactPlugin from 'eslint-plugin-react';
 import reactHooksPlugin from 'eslint-plugin-react-hooks';
 import jsxA11yPlugin from 'eslint-plugin-jsx-a11y';
+import compatPlugin from 'eslint-plugin-compat';
+import browserslistQuery from './browserslist.js';
 import { claudeCodePlugin } from './plugins/claude-code/index.js';
 import { hsWebTeamPlugin } from './plugins/hs-web-team/index.js';
 import { underscoreDangleAllowlist, browserBaseRules as baseRules, browserGlobals } from './base-rules.js';
@@ -113,6 +115,13 @@ export default [
       ...jsxA11yPlugin.configs.recommended.rules,
       ...reactRules,
     },
+  },
+  // Flag browser APIs missing from the shared support list (see browserslist.js)
+  {
+    files: ['**/*.{js,mjs,cjs,jsx,ts,mts,cts,tsx}'],
+    plugins: { compat: compatPlugin },
+    settings: { browsers: browserslistQuery },
+    rules: { 'compat/compat': 'warn' },
   },
   // CLAUDE.md and SKILL.md context-file checks (see plugins/claude-code)
   ...claudeCodePlugin.configs.recommended,
