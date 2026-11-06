@@ -112,7 +112,6 @@ When testing changes to this package in downstream projects, you'll typically:
   - Browser export (`./browser`): `browser.js` - Browser/React ESLint configuration
   - Prettier export (`./.prettierrc.json`): `.prettierrc.json` - Prettier configuration
   - Stylelint export (`./.stylelintrc.json`): `.stylelintrc.json` - Stylelint configuration
-  - Browserslist export (`./browserslist`): `browserslist.js` - shared browser support query; also hardcoded in `.stylelintrc.json` (kept in sync by `test/integration/browserslist.test.js`)
   - Cypress export (`./cypress.config`): `cypress.config.cjs` (runtime), `cypress.config.d.ts` (types)
 - **Binary command**: `add-prettier` maps to `bin/add-prettier-scripts.js`
 

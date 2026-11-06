@@ -23,7 +23,7 @@
   "exports": {
     ".": "./index.js",
     "./browser": "./browser.js",
-    "./browserslist": "./browserslist.js",
+    "./browserslist-config": "./browserslist.js",
     "./.prettierrc.json": "./.prettierrc.json",
     "./.stylelintrc.json": "./.stylelintrc.json",
     "./cypress.config": {

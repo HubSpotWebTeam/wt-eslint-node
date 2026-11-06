@@ -1,6 +1,6 @@
 # Shared Browserslist Query
 
-`@hs-web-team/eslint-config-node/browserslist` exports the browser support list from the WDO [Browser Support Guidelines](https://hubspot.atlassian.net/wiki/spaces/MKT/pages/1440153616/Browser+Support+Guidelines) as a rolling browserslist query:
+`@hs-web-team/eslint-config-node/browserslist-config` exports the browser support list from the WDO [Browser Support Guidelines](https://hubspot.atlassian.net/wiki/spaces/MKT/pages/1440153616/Browser+Support+Guidelines) as a rolling browserslist query:
 
 ```js
 ['last 1 year', 'Firefox ESR'];
@@ -17,34 +17,28 @@ The browser ESLint config and the shared Stylelint config check code against thi
 
 ## Build tooling
 
-Pass the query to build tools that need targets.
+Extend the shared query from the project's browserslist config. Every tool that reads browserslist config (Babel `preset-env`, Autoprefixer, `postcss-preset-env`, and others) then uses it without per-tool setup.
 
-Babel (`babel.config.js`, ESM):
+`.browserslistrc`:
+
+```
+extends @hs-web-team/eslint-config-node/browserslist-config
+```
+
+Or in `package.json`:
+
+```json
+{
+  "browserslist": ["extends @hs-web-team/eslint-config-node/browserslist-config"]
+}
+```
+
+Remove any `targets` or `overrideBrowserslist` options from tool configs, since they take precedence over the browserslist config.
+
+For a config that needs the list itself, import it:
 
 ```js
-import browserslistQuery from '@hs-web-team/eslint-config-node/browserslist';
-
-export default {
-  presets: [['@babel/preset-env', { targets: browserslistQuery }]],
-};
-```
-
-PostCSS (`postcss.config.js`, ESM):
-
-```js
-import autoprefixer from 'autoprefixer';
-import browserslistQuery from '@hs-web-team/eslint-config-node/browserslist';
-
-export default {
-  plugins: [autoprefixer({ overrideBrowserslist: browserslistQuery })],
-};
-```
-
-Projects without a JS config keep a `.browserslistrc` with the same query. Browserslist `extends` only accepts packages named `browserslist-config-*`, so it cannot reference this package:
-
-```
-last 1 year
-Firefox ESR
+import browserslistQuery from '@hs-web-team/eslint-config-node/browserslist-config';
 ```
 
 ## Projects with their own browser requirements

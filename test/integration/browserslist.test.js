@@ -1,17 +1,30 @@
 import { test } from 'node:test';
 import assert from 'node:assert';
-import { readFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, symlinkSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import browserslist from 'browserslist';
 import { ESLint } from 'eslint';
 import stylelint from 'stylelint';
 import browserslistQuery from '../../browserslist.js';
 
+const packageRoot = fileURLToPath(new URL('../..', import.meta.url));
 const browserConfig = fileURLToPath(new URL('../../browser.js', import.meta.url));
 const stylelintConfigFile = fileURLToPath(new URL('../../.stylelintrc.json', import.meta.url));
 
 test('shared query resolves to at least one browser', () => {
   assert.ok(browserslist(browserslistQuery).length > 0);
+});
+
+test('consumers can extend the shared query from a browserslist config', t => {
+  const consumerRoot = mkdtempSync(join(tmpdir(), 'browserslist-consumer-'));
+  t.after(() => rmSync(consumerRoot, { recursive: true, force: true }));
+  mkdirSync(join(consumerRoot, 'node_modules', '@hs-web-team'), { recursive: true });
+  symlinkSync(packageRoot, join(consumerRoot, 'node_modules', '@hs-web-team', 'eslint-config-node'), 'dir');
+
+  const extended = browserslist('extends @hs-web-team/eslint-config-node/browserslist-config', { path: consumerRoot });
+  assert.deepStrictEqual(extended, browserslist(browserslistQuery));
 });
 
 test('stylelint browsers option matches the shared query', () => {
