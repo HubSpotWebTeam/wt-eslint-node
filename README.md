@@ -191,6 +191,17 @@ import '@hs-web-team/eslint-config-node/cypress/rate-limit-429';
 
 For how it works and how to verify it with a mocked 429, see [examples/cypress-usage.md](./examples/cypress-usage.md#cloudflare-429-handling-cucumber-suites).
 
+## Uncaught exceptions (optional)
+
+Stops uncaught exceptions on the page (GTM, third-party trackers) from failing tests, and logs each one so the Jenkins regression job can list them in the Slack E2E report. Errors from your test code still fail the test. Works for Cucumber and Mocha suites. Add one import to `cypress/support/e2e.js`:
+
+```js
+// Logs uncaught exceptions instead of failing tests. Comment out to fail on them again.
+import '@hs-web-team/eslint-config-node/cypress/uncaught-exceptions';
+```
+
+It also needs two lines in `lambdatest.yaml` and one in `.gitignore`, see [examples/cypress-usage.md](./examples/cypress-usage.md#uncaught-exceptions).
+
 ## Custom Rules
 
 This package ships a `hs-web-team` ESLint plugin with custom rules that are active automatically when you use `wtConfig` or `wtBrowserConfig` — no extra setup needed.
@@ -212,6 +223,7 @@ This package provides multiple configurations:
 - **Cypress configuration** (`cypress.config` export): For E2E testing with Cypress
 - **Accessibility testing** (`/cypress` export): Opt-in cypress-axe setup with WCAG 2.2 AA checks
 - **Cloudflare 429 handling** (`/cypress/rate-limit-429` export): Opt-in Cucumber handling of rate-limit 429s
+- **Uncaught exceptions** (`/cypress/uncaught-exceptions` export): Opt-in logging of page exceptions instead of failing tests
 - **Prettier configuration** (`.prettierrc.json` export): For code formatting
 
 Choose the appropriate configurations based on your project needs.

@@ -11,6 +11,7 @@ export default [
       globals: {
         Cypress: 'readonly',
         cy: 'readonly',
+        after: 'readonly',
       },
     },
   },

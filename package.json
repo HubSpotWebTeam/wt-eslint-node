@@ -37,6 +37,10 @@
       "types": "./cypress/rate-limit-429.d.ts",
       "default": "./cypress/rate-limit-429.js"
     },
+    "./cypress/uncaught-exceptions": {
+      "types": "./cypress/uncaught-exceptions.d.ts",
+      "default": "./cypress/uncaught-exceptions.js"
+    },
     "./plugin": "./plugins/hs-web-team/index.js",
     "./gherkin/.gplintrc": "./gherkin/.gplintrc",
     "./gherkin/coverage-config": "./gherkin/coverage-config.js"
@@ -51,6 +55,9 @@
       ],
       "cypress/rate-limit-429": [
         "./cypress/rate-limit-429.d.ts"
+      ],
+      "cypress/uncaught-exceptions": [
+        "./cypress/uncaught-exceptions.d.ts"
       ]
     }
   },
