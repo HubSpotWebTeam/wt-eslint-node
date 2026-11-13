@@ -175,7 +175,7 @@ a static stub doesn't reliably drive the response lifecycle the middleware obser
 
 ## Uncaught exceptions
 
-Uncaught exceptions on the page (mostly GTM and third-party trackers) fail Cypress tests even
+Uncaught exceptions on the page fail Cypress tests even
 when the feature under test works. This handler stops them from failing the test and logs each
 one (its message and the script it came from) to `uncaught-exceptions.ndjson` in the project
 root. The Jenkins regression job reads that file and lists them in the Slack E2E report.

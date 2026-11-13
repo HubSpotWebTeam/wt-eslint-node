@@ -193,7 +193,7 @@ For how it works and how to verify it with a mocked 429, see [examples/cypress-u
 
 ## Uncaught exceptions (optional)
 
-Stops uncaught exceptions on the page (GTM, third-party trackers) from failing tests, and logs each one so the Jenkins regression job can list them in the Slack E2E report. Errors from your test code still fail the test. Works for Cucumber and Mocha suites. Add one import to `cypress/support/e2e.js`:
+Stops uncaught exceptions on the page from failing tests, and logs each one so the Jenkins regression job can list them in the Slack E2E report. Errors from your test code still fail the test. Works for Cucumber and Mocha suites. Add one import to `cypress/support/e2e.js`:
 
 ```js
 // Logs uncaught exceptions instead of failing tests. Comment out to fail on them again.
