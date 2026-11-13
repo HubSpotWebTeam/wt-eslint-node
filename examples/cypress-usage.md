@@ -173,6 +173,49 @@ fails once (no retry), carries the `[RATE-LIMIT-429]` marker, and — in a Scena
 the remaining examples are skipped. Use a dynamic `req.reply(...)`, not a static stub object:
 a static stub doesn't reliably drive the response lifecycle the middleware observes.
 
+## Uncaught exceptions
+
+Uncaught exceptions on the page fail Cypress tests even
+when the feature under test works. This handler stops them from failing the test and logs each
+one (its message and the script it came from) to `uncaught-exceptions.ndjson` in the project
+root. The Jenkins regression job reads that file and lists them in the Slack E2E report.
+
+Errors thrown by your test code still fail the test. Only errors from the page are logged.
+
+### Enabling it
+
+1. Import it from `cypress/support/e2e.js`. It works the same in Cucumber and Mocha suites:
+
+   ```js
+   // Logs uncaught exceptions instead of failing tests. Comment out to fail on them again.
+   import '@hs-web-team/eslint-config-node/cypress/uncaught-exceptions';
+   ```
+
+2. Remove any catch-all `Cypress.on('uncaught:exception', () => false)` from your support files.
+
+3. In `lambdatest.yaml`, create the file in a `pre` step and upload it:
+
+   ```yaml
+   pre:
+     # ...your install steps...
+     - touch uncaught-exceptions.ndjson || true
+   uploadArtefacts:
+     # ...your other artefacts...
+     - name: UncaughtExceptions
+       path:
+         - ./uncaught-exceptions.ndjson
+   ```
+
+   The `touch` step makes sure the file exists on machines where nothing threw. Without it, the
+   upload fails on those machines and Windows prints a very long folder list in the logs.
+
+4. Add `uncaught-exceptions.ndjson` to `.gitignore`.
+
+5. Make sure the `@hs-web-team/eslint-config-node` version in `package.json`, and in any
+   `npm install` line in the `lambdatest.yaml` `pre` steps, is one that includes this file.
+
+To make page exceptions fail tests again while debugging, comment out the import.
+
 ## Customizing Configuration
 
 ### Add Custom setupNodeEvents
