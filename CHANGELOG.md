@@ -1,5 +1,13 @@
 # Changelog
 
+## [5.4.0](https://github.com/HubSpotWebTeam/wt-eslint-node/compare/v5.3.0...v5.4.0) (2026-11-19)
+
+
+### Features
+
+* add a shared handler that logs uncaught exceptions instead of failing tests ([9dfa469](https://github.com/HubSpotWebTeam/wt-eslint-node/commit/9dfa4695079fb5d2f03ba2850eadf01e0dacd97f))
+* regression testing- add a shared handler that logs uncaught exceptions instead of failing tests ([a554b90](https://github.com/HubSpotWebTeam/wt-eslint-node/commit/a554b90f2222d239878db71362f5a722ce0b4637))
+
 ## [5.3.0](https://github.com/HubSpotWebTeam/wt-eslint-node/compare/v5.2.0...v5.3.0) (2026-11-05)
 
 
