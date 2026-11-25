@@ -1,5 +1,16 @@
 # Changelog
 
+## [6.0.0](https://github.com/HubSpotWebTeam/wt-eslint-node/compare/v5.4.0...v6.0.0) (2026-11-25)
+
+
+### ⚠ BREAKING CHANGES
+
+* The shared Stylelint config now requires Stylelint 18 and Node.js >=24.15.0. Consumers that pin stylelint 17 directly must upgrade it to ^18.0.0 or remove the direct dependency. The inherited standard config newly enables selector-no-deprecated, and declaration-block-single-line-max-declarations no longer exists, so any consumer config that sets it fails with "Unknown rule".
+
+### Features
+
+* upgrade to Stylelint 18 ([#90](https://github.com/HubSpotWebTeam/wt-eslint-node/issues/90)) ([cc7f489](https://github.com/HubSpotWebTeam/wt-eslint-node/commit/cc7f489b15a4d19ababc79635858a2b2f9f71aff))
+
 ## [5.4.0](https://github.com/HubSpotWebTeam/wt-eslint-node/compare/v5.3.0...v5.4.0) (2026-11-19)
 
 
