@@ -106,7 +106,7 @@ When testing changes to this package in downstream projects, you'll typically:
 
 ### Package Details
 - **Type**: ESM module (`"type": "module"`)
-- **Node requirement**: >= 24
+- **Node requirement**: >= 24.15.0 (Stylelint 18 minimum)
 - **Exports**:
   - Main export (`.`): `index.js` - Node.js ESLint configuration
   - Browser export (`./browser`): `browser.js` - Browser/React ESLint configuration

@@ -69,7 +69,7 @@
     "prepare": "git rev-parse --git-dir > /dev/null 2>&1 && git config core.hooksPath .githooks || true"
   },
   "engines": {
-    "node": ">=24"
+    "node": ">=24.15.0"
   },
   "bin": {
     "add-prettier": "bin/add-prettier-scripts.js",
@@ -117,9 +117,9 @@
     "prettier": "3.10.1",
     "prettier-plugin-gherkin": "4.0.0",
     "strip-json-comments": "5.0.3",
-    "stylelint": "17.16.0",
-    "stylelint-config-standard": "40.0.0",
-    "stylelint-config-standard-scss": "17.0.0",
+    "stylelint": "18.1.0",
+    "stylelint-config-standard": "41.1.0",
+    "stylelint-config-standard-scss": "18.0.0",
     "stylelint-declaration-strict-value": "1.13.0",
     "typescript-eslint": "8.73.0"
   },
