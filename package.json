@@ -1,6 +1,6 @@
 {
   "name": "@hs-web-team/eslint-config-node",
-  "version": "5.2.0",
+  "version": "5.4.0",
   "description": "HubSpot Marketing WebTeam shared configurations for ESLint, Prettier, Stylelint, and Cypress",
   "files": [
     ".prettierrc.json",
@@ -37,6 +37,10 @@
       "types": "./cypress/rate-limit-429.d.ts",
       "default": "./cypress/rate-limit-429.js"
     },
+    "./cypress/uncaught-exceptions": {
+      "types": "./cypress/uncaught-exceptions.d.ts",
+      "default": "./cypress/uncaught-exceptions.js"
+    },
     "./plugin": "./plugins/hs-web-team/index.js",
     "./gherkin/.gplintrc": "./gherkin/.gplintrc",
     "./gherkin/coverage-config": "./gherkin/coverage-config.js"
@@ -51,6 +55,9 @@
       ],
       "cypress/rate-limit-429": [
         "./cypress/rate-limit-429.d.ts"
+      ],
+      "cypress/uncaught-exceptions": [
+        "./cypress/uncaught-exceptions.d.ts"
       ]
     }
   },
@@ -62,7 +69,7 @@
     "prepare": "git rev-parse --git-dir > /dev/null 2>&1 && git config core.hooksPath .githooks || true"
   },
   "engines": {
-    "node": ">=24"
+    "node": ">=24.15.0"
   },
   "bin": {
     "add-prettier": "bin/add-prettier-scripts.js",
@@ -93,8 +100,8 @@
     "@eslint/eslintrc": "3.3.6",
     "@eslint/js": "^9.39.1",
     "@eslint/markdown": "8.0.3",
-    "@typescript-eslint/eslint-plugin": "^8.65.0",
-    "@typescript-eslint/parser": "^8.65.0",
+    "@typescript-eslint/eslint-plugin": "8.73.0",
+    "@typescript-eslint/parser": "8.73.0",
     "axe-core": "4.13.0",
     "cypress-axe": "1.7.0",
     "esbuild": "0.28.2",
@@ -107,18 +114,18 @@
     "gplint": "2.6.0",
     "jiti": "2.7.0",
     "js-yaml": "5.4.0",
-    "prettier": "3.9.6",
+    "prettier": "3.10.1",
     "prettier-plugin-gherkin": "4.0.0",
     "strip-json-comments": "5.0.3",
-    "stylelint": "^17.1.1",
-    "stylelint-config-standard": "^40.0.0",
-    "stylelint-config-standard-scss": "^17.0.0",
-    "stylelint-declaration-strict-value": "^1.11.1",
-    "typescript-eslint": "8.68.0"
+    "stylelint": "18.1.0",
+    "stylelint-config-standard": "41.1.0",
+    "stylelint-config-standard-scss": "18.0.0",
+    "stylelint-declaration-strict-value": "1.13.0",
+    "typescript-eslint": "8.73.0"
   },
   "peerDependencies": {
-    "@badeball/cypress-cucumber-preprocessor": "^24.0.1",
-    "cypress": "^15.21.0"
+    "@badeball/cypress-cucumber-preprocessor": "24.0.1",
+    "cypress": "15.21.2"
   },
   "peerDependenciesMeta": {
     "cypress": {
